@@ -1,0 +1,541 @@
+{
+  "issues": [
+    {
+      "id": "rep-101",
+      "title": "Hazardous Deep Pothole near MG Road Metro",
+      "description": "Large deep pothole right after the road curve on MG Road. Several two-wheelers have lost balance and damaged their tires trying to swerve. It is highly dangerous during monsoon rain water logging.",
+      "category": "Roads & Sidewalks",
+      "severity": "high",
+      "tags": [
+        "pothole",
+        "bbmp",
+        "roadwork"
+      ],
+      "lat": 12.9782,
+      "lng": 77.5981,
+      "imageUrl": "pothole",
+      "status": "verified",
+      "reportedBy": "CivicLead",
+      "upvotes": 14,
+      "upvotedBy": [
+        "CivicLead",
+        "kambleganesh775"
+      ],
+      "verifications": 3,
+      "verifiedBy": [
+        "kambleganesh775",
+        "EcoGuardian"
+      ],
+      "createdAt": "2026-06-27T14:00:03.544Z",
+      "aiSuggestedFix": "BBMP Road Maintenance Cell should dispatch a rapid response asphalt repair truck for cold-mix filling immediately. Place warning boards 50m ahead of the curve.",
+      "locationName": "MG Road Metro Corridor, Bengaluru",
+      "city": "bengaluru",
+      "comments": [
+        {
+          "id": "c-1",
+          "author": "kambleganesh775",
+          "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=kambleganesh775",
+          "text": "Hit this pothole while riding home yesterday! Nearly lost balance on my bike. Please drive extremely slow near Cubbon Park curve.",
+          "createdAt": "2026-06-28T14:00:03.545Z"
+        },
+        {
+          "id": "c-2",
+          "author": "CivicLead",
+          "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=CivicLead",
+          "text": "I added temporary warning barricades with red reflective ribbons this afternoon so two-wheelers can spot it.",
+          "createdAt": "2026-06-29T14:00:03.545Z"
+        }
+      ]
+    },
+    {
+      "id": "rep-102",
+      "title": "Major Drinking Water Leak near Indiranagar",
+      "description": "BWSSB underground water main line has ruptured, causing clean drinking water to gush out of cracked pavement. It is flooding the sidewalk, causing pedestrians to walk on the busy 100 Feet road.",
+      "category": "Water & Sanitation",
+      "severity": "critical",
+      "tags": [
+        "water-leak",
+        "bwssb",
+        "flooding"
+      ],
+      "lat": 12.9651,
+      "lng": 77.6115,
+      "imageUrl": "water",
+      "status": "in_progress",
+      "reportedBy": "EcoGuardian",
+      "upvotes": 28,
+      "upvotedBy": [
+        "EcoGuardian",
+        "kambleganesh775",
+        "CivicLead"
+      ],
+      "verifications": 5,
+      "verifiedBy": [
+        "kambleganesh775",
+        "CivicLead"
+      ],
+      "createdAt": "2026-06-29T02:00:03.545Z",
+      "aiSuggestedFix": "BWSSB engineers need to isolate Gate Valve #12. Excavation is required to replace the broken PVC conduit with a heavy-duty ductile iron collar.",
+      "locationName": "100 Feet Road, Indiranagar, Bengaluru",
+      "city": "bengaluru",
+      "comments": [
+        {
+          "id": "c-3",
+          "author": "kambleganesh775",
+          "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=kambleganesh775",
+          "text": "Spoke to the local BWSSB sub-division engineer, they stated a team is on the way to initiate excavation.",
+          "createdAt": "2026-06-29T14:00:03.545Z"
+        }
+      ]
+    },
+    {
+      "id": "rep-103",
+      "title": "Broken Streetlights near Majestic Transit Hub",
+      "description": "BESCOM streetlights along this crowded pedestrian path have been pitch black for over a week. Extreme safety risk for commuters returning late from the metro and train station.",
+      "category": "Streetlights & Power",
+      "severity": "high",
+      "tags": [
+        "bescom",
+        "darkness",
+        "safety"
+      ],
+      "lat": 12.9702,
+      "lng": 77.5805,
+      "imageUrl": "light",
+      "status": "reported",
+      "reportedBy": "kambleganesh775",
+      "upvotes": 9,
+      "upvotedBy": [
+        "kambleganesh775",
+        "EcoGuardian"
+      ],
+      "verifications": 1,
+      "verifiedBy": [
+        "CivicLead"
+      ],
+      "createdAt": "2026-06-26T14:00:03.545Z",
+      "aiSuggestedFix": "BESCOM field crew to replace expired mercury bulb with energy-efficient 120W LED fixture. Inspect daylight photocell sensor wiring.",
+      "locationName": "KSR Majestic Station Footpath, Bengaluru",
+      "city": "bengaluru",
+      "comments": []
+    },
+    {
+      "id": "rep-104",
+      "title": "Illegal Solid Waste Dumping near Ulsoor Lake",
+      "description": "Several tons of commercial solid plastic waste and construction debris have been dumped directly along the Ulsoor Lake promenade footpath. Emitting strong odor and degrading lake water quality.",
+      "category": "Waste & Environment",
+      "severity": "medium",
+      "tags": [
+        "garbage",
+        "bbmp",
+        "cleanup"
+      ],
+      "lat": 12.9812,
+      "lng": 77.6092,
+      "imageUrl": "waste",
+      "status": "resolved",
+      "reportedBy": "EcoGuardian",
+      "upvotes": 22,
+      "upvotedBy": [],
+      "verifications": 4,
+      "verifiedBy": [],
+      "createdAt": "2026-06-20T14:00:03.545Z",
+      "resolvedAt": "2026-06-29T14:00:03.545Z",
+      "aiSuggestedFix": "BBMP Sanitation cell dispatch of heavy garbage loader and dump truck. Install warning CCTV camera surveillance around the scenic lake wall.",
+      "locationName": "Kensington Road Promenade, Ulsoor Lake, Bengaluru",
+      "city": "bengaluru",
+      "comments": [
+        {
+          "id": "c-4",
+          "author": "EcoGuardian",
+          "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=EcoGuardian",
+          "text": "Cleanliness drive conducted by BBMP sanitation staff along with Lake Welfare volunteers! Path is clean now, and BBMP has added warning plaques.",
+          "createdAt": "2026-06-28T14:00:03.545Z"
+        }
+      ]
+    },
+    {
+      "id": "rep-201",
+      "title": "Waterlogging & Road Cavity near Marine Drive",
+      "description": "Heavy monsoon tide water has pooled near the promenade, creating a hidden 2-foot road cavity. Extremely hazardous for cars and walkers.",
+      "category": "Roads & Sidewalks",
+      "severity": "critical",
+      "tags": [
+        "waterlogging",
+        "marine-drive",
+        "bmc"
+      ],
+      "lat": 18.9402,
+      "lng": 72.8225,
+      "imageUrl": "pothole",
+      "status": "verified",
+      "reportedBy": "CivicLead",
+      "upvotes": 31,
+      "upvotedBy": [
+        "CivicLead",
+        "EcoGuardian"
+      ],
+      "verifications": 3,
+      "verifiedBy": [
+        "kambleganesh775"
+      ],
+      "createdAt": "2026-06-28T15:30:00.000Z",
+      "aiSuggestedFix": "BMC Road & Traffic Department must install reflective visual cones and deploy standard high-capacity pumping trucks to drain water, followed by immediate cold asphalt paving.",
+      "locationName": "Marine Drive Promenade, Mumbai",
+      "city": "mumbai",
+      "comments": []
+    },
+    {
+      "id": "rep-202",
+      "title": "Broken Street Lamps opposite CST Station",
+      "description": "Old sodium streetlights along the busy outer walkway are completely dark. Promotes anti-social behavior and creates severe pedestrian hazards for train commuters.",
+      "category": "Streetlights & Power",
+      "severity": "high",
+      "tags": [
+        "darkness",
+        "cst",
+        "safety"
+      ],
+      "lat": 18.9398,
+      "lng": 72.8355,
+      "imageUrl": "light",
+      "status": "reported",
+      "reportedBy": "EcoGuardian",
+      "upvotes": 12,
+      "upvotedBy": [
+        "EcoGuardian"
+      ],
+      "verifications": 1,
+      "verifiedBy": [
+        "CivicLead"
+      ],
+      "createdAt": "2026-06-29T10:15:00.000Z",
+      "aiSuggestedFix": "BEST Electricity Board crew to inspect control boxes and replace high-pressure sodium bulbs with modern 150W LED fixtures immediately.",
+      "locationName": "Walkway opposite Chhatrapati Shivaji Terminus (CST), Mumbai",
+      "city": "mumbai",
+      "comments": []
+    },
+    {
+      "id": "rep-301",
+      "title": "Fallen Overhead Power Cable near CP Circle",
+      "description": "High-voltage overhead cable has snapped and is hanging low over a metallic signpost near the outer circle. Direct risk of severe shock or electrocution during monsoons.",
+      "category": "Streetlights & Power",
+      "severity": "critical",
+      "tags": [
+        "live-wire",
+        "electricity",
+        "bses"
+      ],
+      "lat": 28.6304,
+      "lng": 77.2177,
+      "imageUrl": "light",
+      "status": "in_progress",
+      "reportedBy": "CivicLead",
+      "upvotes": 45,
+      "upvotedBy": [
+        "CivicLead",
+        "kambleganesh775",
+        "EcoGuardian"
+      ],
+      "verifications": 6,
+      "verifiedBy": [
+        "kambleganesh775",
+        "EcoGuardian"
+      ],
+      "createdAt": "2026-06-29T18:45:00.000Z",
+      "aiSuggestedFix": "NDMC/BSES rapid response electrical team must immediately isolate Grid Section 4. Replace the cracked overhead support insulator and retension the line safely.",
+      "locationName": "Radial Road 3, Outer Circle, Connaught Place, New Delhi",
+      "city": "delhi",
+      "comments": [
+        {
+          "id": "c-del-1",
+          "author": "EcoGuardian",
+          "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=EcoGuardian",
+          "text": "Sent warning to NDMC portal. Police have cordoned off this corner for safety.",
+          "createdAt": "2026-06-29T20:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "rep-302",
+      "title": "Clogged Stormwater Drain near India Gate Lawns",
+      "description": "Silt, plastic bottles, and organic tree debris have completely choked the main storm drain grates, causing water to pool 1 foot deep across the pedestrian pathway.",
+      "category": "Water & Sanitation",
+      "severity": "medium",
+      "tags": [
+        "drainage",
+        "flooding",
+        "cleanup"
+      ],
+      "lat": 28.6129,
+      "lng": 77.2295,
+      "imageUrl": "water",
+      "status": "reported",
+      "reportedBy": "kambleganesh775",
+      "upvotes": 8,
+      "upvotedBy": [
+        "kambleganesh775"
+      ],
+      "verifications": 1,
+      "verifiedBy": [],
+      "createdAt": "2026-06-28T09:00:00.000Z",
+      "aiSuggestedFix": "Delhi Jal Board/MCD sanitation crews to deploy high-pressure jetting suction machines to clear subterranean plastic bottlenecks.",
+      "locationName": "India Gate Central Lawns Outer Path, New Delhi",
+      "city": "delhi",
+      "comments": []
+    },
+    {
+      "id": "rep-401",
+      "title": "Sewage Line Overflow near Marina Beach",
+      "description": "Underground sewer trunk line has backed up, causing pungent dark sewage water to pool on the beach loop road. Ruining the pristine public space and posing a biological threat.",
+      "category": "Water & Sanitation",
+      "severity": "high",
+      "tags": [
+        "sewage",
+        "marina-beach",
+        "overflow"
+      ],
+      "lat": 13.0482,
+      "lng": 80.2785,
+      "imageUrl": "water",
+      "status": "verified",
+      "reportedBy": "EcoGuardian",
+      "upvotes": 19,
+      "upvotedBy": [
+        "EcoGuardian"
+      ],
+      "verifications": 3,
+      "verifiedBy": [
+        "CivicLead"
+      ],
+      "createdAt": "2026-06-26T11:00:00.000Z",
+      "aiSuggestedFix": "CMWSSB drainage squad should deploy specialized super-sucker vacuum pumps to clear plastic and sludge blockages in Mainhole #104.",
+      "locationName": "Marina Beach Loop Road, Chennai",
+      "city": "chennai",
+      "comments": []
+    },
+    {
+      "id": "rep-402",
+      "title": "Open Exposed Wire Junction Box in T. Nagar",
+      "description": "Main utility distribution box on the busy Usman road shopping footpath has its metal doors open. Wet weather and crowds make this extremely dangerous.",
+      "category": "Streetlights & Power",
+      "severity": "critical",
+      "tags": [
+        "exposed-wiring",
+        "safety",
+        "t-nagar"
+      ],
+      "lat": 13.0410,
+      "lng": 80.2330,
+      "imageUrl": "light",
+      "status": "in_progress",
+      "reportedBy": "kambleganesh775",
+      "upvotes": 34,
+      "upvotedBy": [
+        "kambleganesh775",
+        "CivicLead"
+      ],
+      "verifications": 4,
+      "verifiedBy": [
+        "EcoGuardian"
+      ],
+      "createdAt": "2026-06-29T13:00:00.000Z",
+      "aiSuggestedFix": "TANGEDCO electrical inspectors to shut down localized feeder line, tape exposed copper joints, and lock/replace the cabinet doors with reinforced metal locks.",
+      "locationName": "Usman Road Footpath, T. Nagar, Chennai",
+      "city": "chennai",
+      "comments": []
+    },
+    {
+      "id": "rep-501",
+      "title": "Sewerage Overflow outside Charminar Entrance",
+      "description": "Main sewer manhole is bubbling over, flooding the heritage walkway with foul-smelling waste. Severely impacting tourists and local street vendors.",
+      "category": "Water & Sanitation",
+      "severity": "high",
+      "tags": [
+        "sewer-leak",
+        "charminar",
+        "hygienic"
+      ],
+      "lat": 17.3616,
+      "lng": 78.4746,
+      "imageUrl": "water",
+      "status": "reported",
+      "reportedBy": "CivicLead",
+      "upvotes": 25,
+      "upvotedBy": [
+        "CivicLead",
+        "EcoGuardian"
+      ],
+      "verifications": 1,
+      "verifiedBy": [],
+      "createdAt": "2026-06-28T07:30:00.000Z",
+      "aiSuggestedFix": "HMWSSB municipal rapid response teams must flush the main line with high-velocity water jetters to dissolve fatbergs.",
+      "locationName": "Laad Bazar Chowk, Charminar, Hyderabad",
+      "city": "hyderabad",
+      "comments": []
+    },
+    {
+      "id": "rep-502",
+      "title": "Defunct Smart LED Lights in HITEC City",
+      "description": "A consecutive string of 5 smart overhead LED street lamps has blacked out. Creating a pitch-dark, unsafe walking space on the high-intensity tech transit route.",
+      "category": "Streetlights & Power",
+      "severity": "medium",
+      "tags": [
+        "darkness",
+        "hitec-city",
+        "safety"
+      ],
+      "lat": 17.4425,
+      "lng": 78.3780,
+      "imageUrl": "light",
+      "status": "verified",
+      "reportedBy": "kambleganesh775",
+      "upvotes": 15,
+      "upvotedBy": [
+        "kambleganesh775"
+      ],
+      "verifications": 2,
+      "verifiedBy": [
+        "CivicLead"
+      ],
+      "createdAt": "2026-06-27T22:00:00.000Z",
+      "aiSuggestedFix": "TSSPDCL field electricians to replace blown photodiode switches and reboot the localized smart-lighting gateway router.",
+      "locationName": "Mindspace Road, HITEC City Tech Corridor, Hyderabad",
+      "city": "hyderabad",
+      "comments": []
+    },
+    {
+      "id": "rep-601",
+      "title": "Tram Line Pavement Cracking on College Street",
+      "description": "Bitumen surrounding the active tram tracks has broken away completely, leaving deep 5-inch trenches. Two-wheeler tires are getting caught, leading to slips and traffic congestion.",
+      "category": "Roads & Sidewalks",
+      "severity": "high",
+      "tags": [
+        "tram-tracks",
+        "potholes",
+        "college-street"
+      ],
+      "lat": 22.5745,
+      "lng": 88.3638,
+      "imageUrl": "pothole",
+      "status": "verified",
+      "reportedBy": "EcoGuardian",
+      "upvotes": 29,
+      "upvotedBy": [
+        "EcoGuardian",
+        "kambleganesh775"
+      ],
+      "verifications": 3,
+      "verifiedBy": [
+        "CivicLead"
+      ],
+      "createdAt": "2026-06-27T12:00:00.000Z",
+      "aiSuggestedFix": "KMC Civil Engineers & Kolkata Tramways joint dispatch to pour quick-setting structural cement mortar along the rail flanks and level the asphalt grade.",
+      "locationName": "Presidency University Junction, College Street, Kolkata",
+      "city": "kolkata",
+      "comments": []
+    }
+  ],
+  "users": {
+    "kambleganesh775": {
+      "username": "kambleganesh775",
+      "points": 420,
+      "level": 4,
+      "reportsSubmitted": 6,
+      "verificationsMade": 18,
+      "badges": [
+        {
+          "id": "badge-1",
+          "name": "Pothole Pioneer",
+          "description": "Reported first localized road infrastructure issue.",
+          "icon": "ShieldAlert",
+          "unlockedAt": "2026-06-15T14:00:03.545Z"
+        },
+        {
+          "id": "badge-2",
+          "name": "Community Sentinel",
+          "description": "Verified 10 or more community-reported complaints.",
+          "icon": "ShieldCheck",
+          "unlockedAt": "2026-06-25T14:00:03.545Z"
+        },
+        {
+          "id": "badge-3",
+          "name": "Eco Guardian",
+          "description": "Resolved or reported 3 sanitation and park issues.",
+          "icon": "Leaf",
+          "unlockedAt": "2026-06-29T14:00:03.545Z"
+        }
+      ]
+    },
+    "EcoGuardian": {
+      "username": "EcoGuardian",
+      "points": 280,
+      "level": 2,
+      "reportsSubmitted": 2,
+      "verificationsMade": 5,
+      "badges": [
+        {
+          "id": "badge-2",
+          "name": "Community Sentinel",
+          "description": "Verified 10 or more community-reported complaints.",
+          "icon": "ShieldCheck",
+          "unlockedAt": "2026-06-27T14:00:03.545Z"
+        }
+      ]
+    },
+    "CivicLead": {
+      "username": "CivicLead",
+      "points": 620,
+      "level": 5,
+      "reportsSubmitted": 10,
+      "verificationsMade": 22,
+      "badges": [
+        {
+          "id": "badge-1",
+          "name": "Pothole Pioneer",
+          "description": "Reported first localized road infrastructure issue.",
+          "icon": "ShieldAlert",
+          "unlockedAt": "2026-06-10T14:00:03.545Z"
+        },
+        {
+          "id": "badge-2",
+          "name": "Community Sentinel",
+          "description": "Verified 10 or more community-reported complaints.",
+          "icon": "ShieldCheck",
+          "unlockedAt": "2026-06-20T14:00:03.545Z"
+        }
+      ]
+    }
+  },
+  "activeUsername": "kambleganesh775",
+  "profile": {
+    "username": "kambleganesh775",
+    "points": 420,
+    "level": 4,
+    "reportsSubmitted": 6,
+    "verificationsMade": 18,
+    "badges": [
+      {
+        "id": "badge-1",
+        "name": "Pothole Pioneer",
+        "description": "Reported first localized road infrastructure issue.",
+        "icon": "ShieldAlert",
+        "unlockedAt": "2026-06-15T14:00:03.545Z"
+      },
+      {
+        "id": "badge-2",
+        "name": "Community Sentinel",
+        "description": "Verified 10 or more community-reported complaints.",
+        "icon": "ShieldCheck",
+        "unlockedAt": "2026-06-25T14:00:03.545Z"
+      },
+      {
+        "id": "badge-3",
+        "name": "Eco Guardian",
+        "description": "Resolved or reported 3 sanitation and park issues.",
+        "icon": "Leaf",
+        "unlockedAt": "2026-06-29T14:00:03.545Z"
+      }
+    ]
+  }
+}

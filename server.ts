@@ -64,7 +64,131 @@ interface Issue {
   aiSuggestedFix?: string;
   comments: Comment[];
   locationName: string;
+  city?: string;
 }
+
+const CITIES_CONFIG = [
+  {
+    id: "bengaluru",
+    cityName: "Bengaluru",
+    stateName: "Karnataka",
+    latMin: 12.9500,
+    latMax: 12.9900,
+    lngMin: 77.5600,
+    lngMax: 77.6300,
+    landmarks: [
+      { name: "Cubbon Park Botanical Zone", x: 18, y: 12 },
+      { name: "Koramangala Community Playgrounds", x: 75, y: 85 },
+      { name: "MG Road Metro Corridor", x: 75, y: 50 }
+    ],
+    agencies: {
+      roads: { name: "BBMP Road Maintenance Cell", desc: "Primary responder: Roads, Potholes, Sidewalk concrete cracking" },
+      water: { name: "BWSSB Water & Sewerage Division", desc: "Primary responder: Water main breaks, sewer overflow, stormwater drainage" },
+      power: { name: "BESCOM Electrical Grid Solutions", desc: "Primary responder: Damaged street lights, transformer noise, public power boxes" }
+    },
+    budget: "₹4.5 Crores"
+  },
+  {
+    id: "mumbai",
+    cityName: "Mumbai",
+    stateName: "Maharashtra",
+    latMin: 18.9100,
+    latMax: 18.9600,
+    lngMin: 72.8000,
+    lngMax: 72.8600,
+    landmarks: [
+      { name: "Marine Drive Promenade", x: 20, y: 80 },
+      { name: "Chhatrapati Shivaji Terminus", x: 65, y: 40 },
+      { name: "Gateway of India Plaza", x: 80, y: 90 }
+    ],
+    agencies: {
+      roads: { name: "BMC Road & Traffic Department", desc: "Primary responder: Asphalt resurfacing, pothole filling, lane marking" },
+      water: { name: "BMC Hydraulic Engineering Division", desc: "Primary responder: Potable supply lines, water contamination, valve repairs" },
+      power: { name: "BEST Electricity Board", desc: "Primary responder: Street lamp replacement, transformer maintenance" }
+    },
+    budget: "₹12.8 Crores"
+  },
+  {
+    id: "delhi",
+    cityName: "New Delhi",
+    stateName: "Delhi NCR",
+    latMin: 28.5900,
+    latMax: 28.6500,
+    lngMin: 77.1900,
+    lngMax: 77.2500,
+    landmarks: [
+      { name: "Connaught Place Circle", x: 50, y: 30 },
+      { name: "India Gate Central Lawns", x: 70, y: 65 },
+      { name: "Rajpath Boulevard Area", x: 35, y: 80 }
+    ],
+    agencies: {
+      roads: { name: "MCD Public Works Department", desc: "Primary responder: Urban bypass roads, sidewalks, flyover repairs" },
+      water: { name: "Delhi Jal Board (DJB)", desc: "Primary responder: Yamuna supply canals, household sewerage, water supply leaks" },
+      power: { name: "TPDDL / BSES Power Grid", desc: "Primary responder: High tension wires, overhead cable bundling, dark streetlights" }
+    },
+    budget: "₹9.5 Crores"
+  },
+  {
+    id: "chennai",
+    cityName: "Chennai",
+    stateName: "Tamil Nadu",
+    latMin: 13.0200,
+    latMax: 13.0800,
+    lngMin: 80.2100,
+    lngMax: 80.2900,
+    landmarks: [
+      { name: "Marina Beach Promenade", x: 85, y: 50 },
+      { name: "T. Nagar Shopping District", x: 30, y: 70 },
+      { name: "Guindy National Park Edge", x: 15, y: 25 }
+    ],
+    agencies: {
+      roads: { name: "GCC Stormwater & Roads Wing", desc: "Primary responder: Pavement leveling, concrete roads, stormwater drain filters" },
+      water: { name: "CMWSSB Metro Water Board", desc: "Primary responder: Seawater desalination feeds, canal overflows, pipe repairs" },
+      power: { name: "TANGEDCO Electrical Utility", desc: "Primary responder: Street lamp fixtures, phase failures, grid repairs" }
+    },
+    budget: "₹5.2 Crores"
+  },
+  {
+    id: "hyderabad",
+    cityName: "Hyderabad",
+    stateName: "Telangana",
+    latMin: 17.3400,
+    latMax: 17.4500,
+    lngMin: 78.3600,
+    lngMax: 78.4900,
+    landmarks: [
+      { name: "Charminar Heritage Circle", x: 50, y: 85 },
+      { name: "Hussain Sagar Lake Walkway", x: 45, y: 25 },
+      { name: "HITEC City Tech Corridor", x: 10, y: 40 }
+    ],
+    agencies: {
+      roads: { name: "GHMC Engineering Division", desc: "Primary responder: Concrete road corridors, pedestrian underpasses" },
+      water: { name: "HMWSSB Water Supply Division", desc: "Primary responder: Krishna & Godavari feeds, residential valve leakage" },
+      power: { name: "TSSPDCL Power Distribution", desc: "Primary responder: Distribution box sealing, smart streetlight replacements" }
+    },
+    budget: "₹6.1 Crores"
+  },
+  {
+    id: "kolkata",
+    cityName: "Kolkata",
+    stateName: "West Bengal",
+    latMin: 22.5200,
+    latMax: 22.5900,
+    lngMin: 88.3200,
+    lngMax: 88.3800,
+    landmarks: [
+      { name: "Victoria Memorial Gardens", x: 40, y: 65 },
+      { name: "Howrah Bridge Junction", x: 45, y: 15 },
+      { name: "Park Street Boulevard", x: 65, y: 50 }
+    ],
+    agencies: {
+      roads: { name: "KMC Civil Engineering Dept", desc: "Primary responder: Road grading, heritage paving repair, cobblestones" },
+      water: { name: "KMC Water Supply Department", desc: "Primary responder: Hooghly river filtration conduits, localized pipe leakage" },
+      power: { name: "CESC Electrical Supply", desc: "Primary responder: Overhead cabling, streetlamp restoration, box safety" }
+    },
+    budget: "₹4.2 Crores"
+  }
+];
 
 interface UserProfile {
   username: string;
@@ -85,99 +209,99 @@ interface UserProfile {
 const DEFAULT_ISSUES: Issue[] = [
   {
     id: "rep-101",
-    title: "Hazardous Deep Pothole on Curve",
-    description: "Deep pothole right after the blind curve on Maple Avenue. Several vehicles have damaged tires trying to swerve around it. It is becoming increasingly dangerous during evening hours.",
+    title: "Hazardous Deep Pothole near MG Road Metro",
+    description: "Large deep pothole right after the road curve on MG Road. Several two-wheelers have lost balance and damaged their tires trying to swerve. It is highly dangerous during monsoon rain water logging.",
     category: "Roads & Sidewalks",
     severity: "high",
-    tags: ["pothole", "hazard", "roadwork"],
-    lat: 34.0582,
-    lng: -118.2581,
+    tags: ["pothole", "bbmp", "roadwork"],
+    lat: 12.9782,
+    lng: 77.5981,
     imageUrl: "pothole", // Code maps this to local graphic representations
     status: "verified",
-    reportedBy: "AlexRivers",
+    reportedBy: "CivicLead",
     upvotes: 14,
-    upvotedBy: ["AlexRivers", "Nate_K", "SarahM"],
+    upvotedBy: ["CivicLead", "kambleganesh775"],
     verifications: 3,
-    verifiedBy: ["User77", "CommunityPatrol", "Civilian2"],
+    verifiedBy: ["kambleganesh775", "EcoGuardian"],
     createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    aiSuggestedFix: "Department of Transportation should schedule instant cold-patch repair. Secondary warning signs required 50ft ahead of curve to prevent emergency swerving.",
-    locationName: "842 Maple Avenue, Downtown East",
+    aiSuggestedFix: "BBMP Road Maintenance Cell should dispatch a rapid response asphalt repair truck for cold-mix filling immediately. Place warning boards 50m ahead of the curve.",
+    locationName: "MG Road Metro Corridor, Bengaluru",
     comments: [
       {
         id: "c-1",
-        author: "SarahM",
-        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
-        text: "Hit this last night! Literally thought I ruptured an axle. Be very quiet and careful taking that bend.",
+        author: "kambleganesh775",
+        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=kambleganesh775",
+        text: "Hit this pothole while riding home yesterday! Nearly lost balance on my bike. Please drive extremely slow near Cubbon Park curve.",
         createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
       },
       {
         id: "c-2",
-        author: "CityDesk_Volunteer",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
-        text: "I added extra high-visibility orange tape around it as a temporary fix this afternoon.",
+        author: "CivicLead",
+        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=CivicLead",
+        text: "I added temporary warning barricades with red reflective ribbons this afternoon so two-wheelers can spot it.",
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
       }
     ]
   },
   {
     id: "rep-102",
-    title: "Major Water Leak Flooding Sidewalk",
-    description: "Underground main line leakage has caused water to burst through cracked pavement. It is flooding the sidewalk, causing pedestrians to walk on the busy main road near Elm Community Park.",
+    title: "Major Drinking Water Leak near Indiranagar",
+    description: "BWSSB underground water main line has ruptured, causing clean drinking water to gush out of cracked pavement. It is flooding the sidewalk, causing pedestrians to walk on the busy 100 Feet road.",
     category: "Water & Sanitation",
     severity: "critical",
-    tags: ["water-leak", "flooding", "safety"],
-    lat: 34.0451,
-    lng: -118.2415,
+    tags: ["water-leak", "bwssb", "flooding"],
+    lat: 12.9651,
+    lng: 77.6115,
     imageUrl: "water",
     status: "in_progress",
-    reportedBy: "SoniaG_Green",
+    reportedBy: "EcoGuardian",
     upvotes: 28,
-    upvotedBy: ["SoniaG_Green", "KevD", "LisaR", "DaveT"],
+    upvotedBy: ["EcoGuardian", "kambleganesh775", "CivicLead"],
     verifications: 5,
-    verifiedBy: ["KevD", "SuperCitizen", "AlexRivers", "NeighborOne"],
+    verifiedBy: ["kambleganesh775", "CivicLead"],
     createdAt: new Date(Date.now() - 1.5 * 24 * 60 * 60 * 1000).toISOString(),
-    aiSuggestedFix: "Emergency shut-off at Gate Valve #12. Excavation required to bypass damaged PVC segment and install high-pressure cast-iron sleeve.",
-    locationName: "Intersection of Brook Lane & Elm Drive",
+    aiSuggestedFix: "BWSSB engineers need to isolate Gate Valve #12. Excavation is required to replace the broken PVC conduit with a heavy-duty ductile iron collar.",
+    locationName: "100 Feet Road, Indiranagar, Bengaluru",
     comments: [
       {
         id: "c-3",
-        author: "KevD",
-        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
-        text: "Department of water stated they dispatched an inspector. Crews should arrive by morning.",
+        author: "kambleganesh775",
+        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=kambleganesh775",
+        text: "Spoke to the local BWSSB sub-division engineer, they stated a team is on the way to initiate excavation.",
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
       }
     ]
   },
   {
     id: "rep-103",
-    title: "Broken Streetlight Near Public Academy",
-    description: "The street light in front of the elementary school has been completely blacked out for over a week. The pathway is extremely dark during winter afternoon pickups.",
+    title: "Broken Streetlights near Majestic Transit Hub",
+    description: "BESCOM streetlights along this crowded pedestrian path have been pitch black for over a week. Extreme safety risk for commuters returning late from the metro and train station.",
     category: "Streetlights & Power",
-    severity: "medium",
-    tags: ["darkness", "lighting", "school-zone"],
-    lat: 34.0502,
-    lng: -118.2505,
+    severity: "high",
+    tags: ["bescom", "darkness", "safety"],
+    lat: 12.9702,
+    lng: 77.5805,
     imageUrl: "light",
     status: "reported",
-    reportedBy: "ParentPatrol",
+    reportedBy: "kambleganesh775",
     upvotes: 9,
-    upvotedBy: ["ParentPatrol", "Misty_M"],
+    upvotedBy: ["kambleganesh775", "EcoGuardian"],
     verifications: 1,
-    verifiedBy: ["Misty_M"],
+    verifiedBy: ["CivicLead"],
     createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-    aiSuggestedFix: "Municipal Light & Power to replace dead mercury vapor bulb with energy-efficient LED luminaire. Check photoelectric photocell sensor function.",
-    locationName: "115 Oak Lane Pathway (School Gate)",
+    aiSuggestedFix: "BESCOM field crew to replace expired mercury bulb with energy-efficient 120W LED fixture. Inspect daylight photocell sensor wiring.",
+    locationName: "KSR Majestic Station Footpath, Bengaluru",
     comments: []
   },
   {
     id: "rep-104",
-    title: "Illegal Litter dumping in Ravine",
-    description: "Several bags of construction waste and old home appliances have been dumped into the reserve valley behind the community center. Highly damaging to local flora and creek water quality.",
+    title: "Illegal Solid Waste Dumping near Ulsoor Lake",
+    description: "Several tons of commercial solid plastic waste and construction debris have been dumped directly along the Ulsoor Lake promenade footpath. Emitting strong odor and degrading lake water quality.",
     category: "Waste & Environment",
     severity: "medium",
-    tags: ["dumping", "pollution", "cleanup"],
-    lat: 34.0612,
-    lng: -118.2392,
+    tags: ["garbage", "bbmp", "cleanup"],
+    lat: 12.9812,
+    lng: 77.6092,
     imageUrl: "waste",
     status: "resolved",
     reportedBy: "EcoGuardian",
@@ -187,14 +311,14 @@ const DEFAULT_ISSUES: Issue[] = [
     verifiedBy: [],
     createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
     resolvedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    aiSuggestedFix: "Eco-cleanup volunteer squad dispatch or sanitation waste vehicle deployment. Post security reminder plaque or configure camera monitors.",
-    locationName: "Ravine Trailhead behind Maplewood Rec Center",
+    aiSuggestedFix: "BBMP Sanitation cell dispatch of heavy garbage loader and dump truck. Install warning CCTV camera surveillance around the scenic lake wall.",
+    locationName: "Kensington Road Promenade, Ulsoor Lake, Bengaluru",
     comments: [
       {
         id: "c-4",
         author: "EcoGuardian",
-        avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150",
-        text: "We hosted a volunteer cleanup crew from high school and cleared 90% of it. City cleared the rest! Mission accomplished!",
+        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=EcoGuardian",
+        text: "Cleanliness drive conducted by BBMP sanitation staff along with Lake Welfare volunteers! Path is clean now, and BBMP has added warning plaques.",
         createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
       }
     ]
@@ -235,7 +359,50 @@ const DEFAULT_PROFILE: UserProfile = {
 // In-Memory Database State (with a persistent JSON file backup if writing succeeds)
 let storeData = {
   issues: DEFAULT_ISSUES,
-  profile: DEFAULT_PROFILE
+  users: {
+    "kambleganesh775": JSON.parse(JSON.stringify(DEFAULT_PROFILE)),
+    "EcoGuardian": {
+      username: "EcoGuardian",
+      points: 280,
+      level: 2,
+      reportsSubmitted: 2,
+      verificationsMade: 5,
+      badges: [
+        {
+          id: "badge-2",
+          name: "Community Sentinel",
+          description: "Verified 10 or more community-reported complaints.",
+          icon: "ShieldCheck",
+          unlockedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      ]
+    },
+    "CivicLead": {
+      username: "CivicLead",
+      points: 620,
+      level: 5,
+      reportsSubmitted: 10,
+      verificationsMade: 22,
+      badges: [
+        {
+          id: "badge-1",
+          name: "Pothole Pioneer",
+          description: "Reported first localized road infrastructure issue.",
+          icon: "ShieldAlert",
+          unlockedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString()
+        },
+        {
+          id: "badge-2",
+          name: "Community Sentinel",
+          description: "Verified 10 or more community-reported complaints.",
+          icon: "ShieldCheck",
+          unlockedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      ]
+    }
+  } as Record<string, UserProfile>,
+  activeUsername: "kambleganesh775",
+  profile: JSON.parse(JSON.stringify(DEFAULT_PROFILE)) as UserProfile
 };
 
 const storeFilePath = path.join(process.cwd(), "store_db.json");
@@ -245,8 +412,23 @@ function loadStore() {
   try {
     if (fs.existsSync(storeFilePath)) {
       const content = fs.readFileSync(storeFilePath, "utf-8");
-      storeData = JSON.parse(content);
-      console.log("Existing store loaded seamlessly from file store.");
+      const parsed = JSON.parse(content);
+      
+      // Auto-migration & validation upgrades for multi-user database schema
+      if (!parsed.users) {
+        parsed.users = {
+          "kambleganesh775": parsed.profile || JSON.parse(JSON.stringify(DEFAULT_PROFILE))
+        };
+      }
+      if (parsed.activeUsername === undefined) {
+        parsed.activeUsername = parsed.profile?.username || "kambleganesh775";
+      }
+      if (!parsed.profile && parsed.activeUsername) {
+        parsed.profile = parsed.users[parsed.activeUsername] || JSON.parse(JSON.stringify(DEFAULT_PROFILE));
+      }
+      
+      storeData = parsed;
+      console.log("Existing store loaded seamlessly from file store with active user:", storeData.activeUsername);
     } else {
       saveStore();
     }
@@ -257,6 +439,13 @@ function loadStore() {
 
 function saveStore() {
   try {
+    // Keep active user profile in sync inside users cache dictionary
+    if (storeData.activeUsername && storeData.profile) {
+      if (!storeData.users) {
+        storeData.users = {};
+      }
+      storeData.users[storeData.activeUsername] = storeData.profile;
+    }
     fs.writeFileSync(storeFilePath, JSON.stringify(storeData, null, 2), "utf-8");
   } catch (error) {
     console.log("Storage notification: local cache state deferred writing.");
@@ -267,14 +456,24 @@ loadStore();
 
 // --- REST API ENDPOINTS ---
 
+// Get supported cities/states
+app.get("/api/cities", (req, res) => {
+  res.json(CITIES_CONFIG);
+});
+
 // Get active issues
 app.get("/api/issues", (req, res) => {
+  const city = req.query.city as string;
+  if (city && city !== "all") {
+    const filtered = storeData.issues.filter(i => (i.city || "bengaluru").toLowerCase() === city.toLowerCase());
+    return res.json(filtered);
+  }
   res.json(storeData.issues);
 });
 
 // Create new community issue with optional AI enhancements
 app.post("/api/issues", (req, res) => {
-  const { title, description, category, severity, tags, lat, lng, imageUrl, reportedBy, locationName, aiSuggestedFix } = req.body;
+  const { title, description, category, severity, tags, lat, lng, imageUrl, reportedBy, locationName, aiSuggestedFix, city } = req.body;
 
   if (!title || !description || !category || !lat || !lng) {
     return res.status(400).json({ error: "Missing required registration parameters." });
@@ -299,7 +498,8 @@ app.post("/api/issues", (req, res) => {
     createdAt: new Date().toISOString(),
     aiSuggestedFix: aiSuggestedFix || "Inspection queued by Public Utilities.",
     comments: [],
-    locationName: locationName || "Custom Coordinate Location"
+    locationName: locationName || "Custom Coordinate Location",
+    city: city || "bengaluru"
   };
 
   storeData.issues.unshift(newIssue);
@@ -437,14 +637,99 @@ app.post("/api/issues/:id/comments", (req, res) => {
 
 // Get user profile
 app.get("/api/user/profile", (req, res) => {
-  res.json(storeData.profile);
+  if (storeData.activeUsername) {
+    if (!storeData.users) {
+      storeData.users = { "kambleganesh775": JSON.parse(JSON.stringify(DEFAULT_PROFILE)) };
+    }
+    const prof = storeData.users[storeData.activeUsername];
+    if (prof) {
+      storeData.profile = prof;
+      return res.json(prof);
+    }
+  }
+  res.json(null);
+});
+
+// Switch profile / Log in user (password-less authentication for local-democracy test sandbox)
+app.post("/api/user/login", (req, res) => {
+  const { username } = req.body;
+  if (!username || !username.trim()) {
+    return res.status(400).json({ error: "Username cannot be empty!" });
+  }
+
+  const cleanUsername = username.trim();
+
+  if (!storeData.users) {
+    storeData.users = {};
+  }
+
+  if (!storeData.users[cleanUsername]) {
+    // Generate new smart city profile with base level stats
+    storeData.users[cleanUsername] = {
+      username: cleanUsername,
+      points: 0,
+      level: 1,
+      reportsSubmitted: 0,
+      verificationsMade: 0,
+      badges: []
+    };
+  }
+
+  storeData.activeUsername = cleanUsername;
+  storeData.profile = storeData.users[cleanUsername];
+
+  saveStore();
+  res.json({ success: true, profile: storeData.profile });
+});
+
+// Logout endpoint
+app.post("/api/user/logout", (req, res) => {
+  storeData.activeUsername = "";
+  storeData.profile = {
+    username: "",
+    points: 0,
+    level: 1,
+    reportsSubmitted: 0,
+    verificationsMade: 0,
+    badges: []
+  };
+  saveStore();
+  res.json({ success: true, profile: null });
+});
+
+// List directories of active citizens to showcase in the switch screen
+app.get("/api/users", (req, res) => {
+  if (!storeData.users) {
+    storeData.users = { "kambleganesh775": JSON.parse(JSON.stringify(DEFAULT_PROFILE)) };
+  }
+  res.json(Object.values(storeData.users));
 });
 
 // Reset simulation database (for developers to clean testing easily)
 app.post("/api/reset", (req, res) => {
   storeData = {
     issues: JSON.parse(JSON.stringify(DEFAULT_ISSUES)),
-    profile: JSON.parse(JSON.stringify(DEFAULT_PROFILE))
+    users: {
+      "kambleganesh775": JSON.parse(JSON.stringify(DEFAULT_PROFILE)),
+      "EcoGuardian": {
+        username: "EcoGuardian",
+        points: 280,
+        level: 2,
+        reportsSubmitted: 2,
+        verificationsMade: 5,
+        badges: [
+          {
+            id: "badge-2",
+            name: "Community Sentinel",
+            description: "Verified 10 or more community-reported complaints.",
+            icon: "ShieldCheck",
+            unlockedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
+          }
+        ]
+      }
+    } as Record<string, UserProfile>,
+    activeUsername: "kambleganesh775",
+    profile: JSON.parse(JSON.stringify(DEFAULT_PROFILE)) as UserProfile
   };
   saveStore();
   res.json(storeData);
@@ -615,16 +900,19 @@ Severity levels: "low" (minor irritation, graffiti, loose bench), "medium" (flic
 
 // Dynamic civic insights & neighborhood impact dashboards powered by Gemini
 app.get("/api/ai/insights", async (req, res) => {
+  const city = (req.query.city as string || "bengaluru").toLowerCase();
+
   if (ai) {
     const MAX_RETRIES = 2;
     let attempt = 0;
     while (attempt <= MAX_RETRIES) {
       try {
         console.log(`Analyzing community data pipeline to compile predictive statistics with Gemini CRM... (Attempt ${attempt + 1})`);
-        const unresolvedIssues = storeData.issues.filter(i => i.status !== "resolved");
-        const resolvedIssuesCount = storeData.issues.filter(i => i.status === "resolved").length;
+        const cityIssues = storeData.issues.filter(i => (i.city || "bengaluru").toLowerCase() === city);
+        const unresolvedIssues = cityIssues.filter(i => i.status !== "resolved");
+        const resolvedIssuesCount = cityIssues.filter(i => i.status === "resolved").length;
 
-        const summaryPayload = storeData.issues.map(i => ({
+        const summaryPayload = cityIssues.map(i => ({
           title: i.title,
           category: i.category,
           severity: i.severity,
@@ -635,7 +923,7 @@ app.get("/api/ai/insights", async (req, res) => {
 
         const response = await ai.models.generateContent({
           model: "gemini-3.5-flash",
-          contents: `Analyze this list of reported civic issues in the neighborhood. Compile a predictive summary mapping out risk pockets, a volunteer campaign, and advice for the mayor:
+          contents: `Analyze this list of reported civic issues in the city of ${city}. Compile a predictive summary mapping out risk pockets, a volunteer campaign, and advice for the mayor:
 ${JSON.stringify(summaryPayload)}
 Unresolved Count: ${unresolvedIssues.length}, Resolved Count: ${resolvedIssuesCount}`,
           config: {
@@ -700,34 +988,156 @@ Provide a structured assessment.`,
     }
   }
 
-  // Preformed Predictive Mock-AI response for immediate, beautiful layout delivery
-  const mockInsights = {
-    hotspots: [
-      {
-        title: "Aging Water Pipe Cluster",
-        location: "Brook Lane Corridor",
-        explanation: "Frequent water pressure reports and sidewalk pooling points to a structural degradation of the 1968 baseline cast-iron conduits.",
-        remedy: "Priority budget earmarking for leak detection survey and ultrasonic wall thickness testing on Brook Lane."
+  // Preformed Predictive Mock-AI response for immediate, beautiful layout delivery matching the active city
+  const cityMockInsights: Record<string, any> = {
+    bengaluru: {
+      hotspots: [
+        {
+          title: "Aging Water Pipe Cluster",
+          location: "MG Road Metro Corridor",
+          explanation: "Frequent water pressure complaints and road waterlogged points indicate a structural leakage of the primary BWSSB potable water distribution network.",
+          remedy: "Priority budget allocation for automated leak detection and ultrasonic pipeline health assessment near Mahatma Gandhi Road."
+        },
+        {
+          title: "High-Risk Twilight Corridors",
+          location: "KSR Majestic Station Path",
+          explanation: "Frequent reports of non-functional streetlights adjacent to major transit zones increases safety risks for late-night commuters.",
+          remedy: "BESCOM to accelerate patrolling and replace damaged bulbs with high-efficiency LEDs on critical pedestrian transit footpaths."
+        }
+      ],
+      volunteerCampaign: {
+        title: "Operation Green Ulsoor",
+        description: "Join fellow citizens on Saturday morning at 7:30 AM. We will collect plastics, segment waste categories, and install awareness placards along the lake promenade.",
+        targetUnits: "Ulsoor Lake Promenade",
+        difficulty: "Easy"
       },
-      {
-        title: "School Zone Twilight Vulnerability",
-        location: "Oak Lane Outer Perimeter",
-        explanation: "Increasing reports of non-functional lighting adjacent to academies and school pathways elevates pedestrian collision risks during winter months.",
-        remedy: "Accelerate grid patrols and execute emergency bulb replacements within a 0.5-mile boundary of schools."
-      }
-    ],
-    volunteerCampaign: {
-      title: "Operation Green Ravine",
-      description: "Join community heroes on Saturday morning at 9:00 AM. We will pick up plastic bags, label recycling compartments, and setup warning placards in the Reserve Trails.",
-      targetUnits: "Maplewood Recreation Center Valley",
-      difficulty: "Easy"
+      civicBrief: "With 75% of reported streetlights currently unresolved, BESCOM resources should shift immediately towards lighting safety operations. Water leak reports remain frequent, but community verification rate has increased by 40%!",
+      topArea: "Water & Sanitation"
     },
-    civicBrief: "With 75% of reported streetlights currently unresolved, municipal resources are recommended to temporarily shift focus towards lighting safety squads, reducing active evening risks. Water main complaints remained high, but community verification speeds have increased by 40%!",
-    topArea: "Water & Sanitation",
-    simulated: true
+    mumbai: {
+      hotspots: [
+        {
+          title: "Monsoon Pavement Swells",
+          location: "Marine Drive Promenade",
+          explanation: "Extreme seawater seepage and high precipitation are creating underground asphalt cavities beneath the coastal roadways.",
+          remedy: "BMC to deploy georadar scanning to detect sub-surface air gaps before cavities trigger structural collapses."
+        },
+        {
+          title: "Commercial Sewage Surcharge",
+          location: "Colaba Causeway Loop",
+          explanation: "High-density retail waste disposal is overloading local storm and sewer conduits, causing reverse backflows.",
+          remedy: "BMC Hydraulic team to enforce fat trap installations for local eateries and upgrade sewer diameters."
+        }
+      ],
+      volunteerCampaign: {
+        title: "Operation Marine Cleanup",
+        description: "Gather with volunteers on Sunday morning at 6:30 AM near Marine Drive to clean solid waste and plastics from the shoreline.",
+        targetUnits: "Marine Drive Shoreline",
+        difficulty: "Easy"
+      },
+      civicBrief: "Heavy water logging and tidal surges demand active inspection of drainage valves. High upvote counts indicate that pavement leveling along high-density zones requires immediate BMC road funding.",
+      topArea: "Roads & Sidewalks"
+    },
+    delhi: {
+      hotspots: [
+        {
+          title: "Overhead Utility Hanging Hazards",
+          location: "Connaught Place Outer Circle",
+          explanation: "Extreme weight from telecom fiber lines is causing electric poles to list, increasing snapping risks during heavy winds.",
+          remedy: "NDMC/BSES to execute underground cable ducting and remove unauthorized overhead broadband lines."
+        },
+        {
+          title: "Silt Flooding Vulnerability",
+          location: "India Gate Central Lawns",
+          explanation: "Unprecedented monsoon sand silting has filled pedestrian catch pits, causing massive pooling in open parks.",
+          remedy: "Deploy localized mechanical desilting trucks to restore storm main drain capacities."
+        }
+      ],
+      volunteerCampaign: {
+        title: "Operation Clean Rajpath",
+        description: "Collaborate on Saturday at 8:00 AM to sweep sand debris, clear litter, and plant native shrubbery around historical walking rails.",
+        targetUnits: "Rajpath Boulevard Walkways",
+        difficulty: "Easy"
+      },
+      civicBrief: "High-voltage cable snaps are a priority safety hazard. NDMC has completed emergency cable tensioning on 2 major segments, but public reporting highlights 3 outstanding CP junctions.",
+      topArea: "Streetlights & Power"
+    },
+    chennai: {
+      hotspots: [
+        {
+          title: "Coastal Sewerage backflows",
+          location: "Marina Beach Loop Road",
+          explanation: "High tide sand blockages inside outfall gates are preventing rainwater escape, causing black wastewater backup.",
+          remedy: "GCC and Metro Water to clear coastal outfalls and install motorized penstock non-return valves."
+        },
+        {
+          title: "Pedestrian Shock Hazards",
+          location: "Usman Road Footpath",
+          explanation: "Leaking rainwater near open-door terminal junction boxes poses severe shock hazards on high-density pedestrian routes.",
+          remedy: "TANGEDCO to inspect all shopping district junction boxes and install rainproof fiberglass enclosures."
+        }
+      ],
+      volunteerCampaign: {
+        title: "Operation Sandy Shore",
+        description: "Join Chennai civic warriors at 6:00 AM at Marina Beach to clean shoreline plastic litter and setup trash segregation bins.",
+        targetUnits: "Marina Beach Promenade",
+        difficulty: "Easy"
+      },
+      civicBrief: "Coastal water overflow and open boxes are critical risks. Local citizens have performed rapid verifications, with community feedback helping GCC crews isolate 4 leaking valves in record time.",
+      topArea: "Water & Sanitation"
+    },
+    hyderabad: {
+      hotspots: [
+        {
+          title: "Heritage Sewerage Overloads",
+          location: "Charminar Circle Path",
+          explanation: "High tourist footfall and decades-old clay pipes have led to structural blockages and active bubbling manholes.",
+          remedy: "HMWSSB to execute robotic camera inspections and install modern pipe-bursting liners without disturbing historical pavements."
+        },
+        {
+          title: "Smart Lighting Gateway Failures",
+          location: "HITEC City Tech Corridor",
+          explanation: "Unstable local network relays have caused automated street lamp controls to freeze in a turned-off state during midnight hours.",
+          remedy: "TSSPDCL to upgrade gateway modems with cellular fallbacks and replace non-responsive photocells."
+        }
+      ],
+      volunteerCampaign: {
+        title: "Operation Clean Charminar",
+        description: "Join hands with local heritage conservations on Saturday at 7:00 AM to sweep sidewalks and distribute waste bins.",
+        targetUnits: "Laad Bazar Promenade",
+        difficulty: "Easy"
+      },
+      civicBrief: "HMWSSB sewerage flushing is highly demanded near heritage points. Tech corridor streetlight reports are verified and queued for fast contractor dispatch within 48 hours.",
+      topArea: "Water & Sanitation"
+    },
+    kolkata: {
+      hotspots: [
+        {
+          title: "Tram Track Bitumen Cavities",
+          location: "College Street Junction",
+          explanation: "Mechanical vibrations from heavy historic trams are fracturing the surrounding bitumen, letting water erode sub-grade soils.",
+          remedy: "KMC and Calcutta Tramways to lay rubberized shock-absorbing track inserts and pour self-leveling fast-setting concrete."
+        },
+        {
+          title: "Pressurized Freshwater Leaks",
+          location: "Victoria Memorial outer walk",
+          explanation: "Thermal expansions on age-old cast-iron feeder tubes are leading to longitudinal seam fractures.",
+          remedy: "Deploy leak-noise correlator diagnostics to locate underground seepage hotspots before they sink pavements."
+        }
+      ],
+      volunteerCampaign: {
+        title: "Operation Maidan Guard",
+        description: "Join Kolkata eco-sentinels on Saturday at 7:30 AM to clear plastic cups, segment organic compost, and paint green trash enclosures.",
+        targetUnits: "Victoria Memorial Outer Lawns",
+        difficulty: "Easy"
+      },
+      civicBrief: "Tram line craters are causing two-wheeler slips during downpours. KMC and Kolkata Police are working to add warning signs, and active public reporting has helped map 3 critical intersections.",
+      topArea: "Roads & Sidewalks"
+    }
   };
 
-  res.json(mockInsights);
+  const insights = cityMockInsights[city] || cityMockInsights.bengaluru;
+  res.json({ ...insights, simulated: true });
 });
 
 

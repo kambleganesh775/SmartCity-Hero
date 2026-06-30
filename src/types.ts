@@ -28,6 +28,27 @@ export interface Issue {
   comments: Comment[];
   locationName: string;
   safetyNote?: string;
+  city?: string;
+}
+
+export interface CityConfig {
+  id: string;
+  cityName: string;
+  stateName: string;
+  latMin: number;
+  latMax: number;
+  lngMin: number;
+  lngMax: number;
+  landmarks: Array<{ name: string; x: number; y: number }>;
+  agencies: {
+    roads: { name: string; desc: string };
+    water: { name: string; desc: string };
+    power: { name: string; desc: string };
+  };
+  budget: string;
+  parks?: Array<{ name: string; x: number; y: number; w: number; h: number }>;
+  waterBodies?: Array<{ name: string; x: number; y: number; w: number; h: number; rotate?: number }>;
+  roadsList?: Array<{ name: string; x: number; y: number; w: number; h: number; rotate?: number; isPrimary?: boolean; isCircular?: boolean }>;
 }
 
 export interface UserProfile {

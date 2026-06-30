@@ -26,9 +26,210 @@ import {
   Volume2,
   Camera,
   Activity,
-  Heart
+  Heart,
+  ZoomIn,
+  ZoomOut,
+  Search,
+  Compass,
+  Layers,
+  ChevronUp,
+  ChevronDown
 } from "lucide-react";
-import { Issue, UserProfile, CivicInsights, AIAnalysisResult } from "./types";
+import { motion } from "motion/react";
+import { Issue, UserProfile, CivicInsights, AIAnalysisResult, CityConfig } from "./types";
+
+const DEFAULT_CITIES: CityConfig[] = [
+  {
+    id: "bengaluru",
+    cityName: "Bengaluru",
+    stateName: "Karnataka",
+    latMin: 12.9500,
+    latMax: 12.9900,
+    lngMin: 77.5600,
+    lngMax: 77.6300,
+    landmarks: [
+      { name: "Cubbon Park Botanical Zone", x: 18, y: 12 },
+      { name: "Koramangala Community Playgrounds", x: 75, y: 85 },
+      { name: "MG Road Metro Corridor", x: 75, y: 50 }
+    ],
+    agencies: {
+      roads: { name: "BBMP Road Maintenance Cell", desc: "Primary responder: Roads, Potholes, Sidewalk concrete cracking" },
+      water: { name: "BWSSB Water & Sewerage Division", desc: "Primary responder: Water main breaks, sewer overflow, stormwater drainage" },
+      power: { name: "BESCOM Electrical Grid Solutions", desc: "Primary responder: Damaged street lights, transformer noise, public power boxes" }
+    },
+    budget: "₹4.5 Crores",
+    parks: [
+      { name: "Cubbon Park", x: 22, y: 20, w: 25, h: 22 },
+      { name: "Koramangala Club Ground", x: 75, y: 78, w: 15, h: 12 }
+    ],
+    waterBodies: [
+      { name: "Ulsoor Lake", x: 55, y: 35, w: 22, h: 18, rotate: 12 }
+    ],
+    roadsList: [
+      { name: "MG Road Corridor", x: 50, y: 50, w: 100, h: 2, rotate: -3, isPrimary: true },
+      { name: "100 Feet Road", x: 65, y: 65, w: 2, h: 45, rotate: -15, isPrimary: false },
+      { name: "Outer Ring Road segment", x: 82, y: 50, w: 2.5, h: 100, rotate: 5, isPrimary: true }
+    ]
+  },
+  {
+    id: "mumbai",
+    cityName: "Mumbai",
+    stateName: "Maharashtra",
+    latMin: 18.9100,
+    latMax: 18.9600,
+    lngMin: 72.8000,
+    lngMax: 72.8600,
+    landmarks: [
+      { name: "Marine Drive Promenade", x: 20, y: 80 },
+      { name: "Chhatrapati Shivaji Terminus", x: 65, y: 40 },
+      { name: "Gateway of India Plaza", x: 80, y: 90 }
+    ],
+    agencies: {
+      roads: { name: "BMC Road & Traffic Department", desc: "Primary responder: Asphalt resurfacing, pothole filling, lane marking" },
+      water: { name: "BMC Hydraulic Engineering Division", desc: "Primary responder: Potable supply lines, water contamination, valve repairs" },
+      power: { name: "BEST Electricity Board", desc: "Primary responder: Street lamp replacement, transformer maintenance" }
+    },
+    budget: "₹12.8 Crores",
+    parks: [
+      { name: "Sanjay Gandhi Eco-belt", x: 45, y: 15, w: 32, h: 14 }
+    ],
+    waterBodies: [
+      { name: "Back Bay Sea Outfall", x: 15, y: 85, w: 35, h: 28, rotate: -10 },
+      { name: "Arabian Sea Inlet", x: 5, y: 45, w: 20, h: 70 }
+    ],
+    roadsList: [
+      { name: "Marine Drive Bypass", x: 18, y: 70, w: 2, h: 55, rotate: 15, isPrimary: true },
+      { name: "Colaba Causeway Main", x: 65, y: 55, w: 2, h: 75, rotate: -25, isPrimary: true },
+      { name: "Netaji Subhash Highway", x: 50, y: 78, w: 100, h: 2.5, rotate: -4, isPrimary: true }
+    ]
+  },
+  {
+    id: "delhi",
+    cityName: "New Delhi",
+    stateName: "Delhi NCR",
+    latMin: 28.5900,
+    latMax: 28.6500,
+    lngMin: 77.1900,
+    lngMax: 77.2500,
+    landmarks: [
+      { name: "Connaught Place Circle", x: 50, y: 30 },
+      { name: "India Gate Central Lawns", x: 70, y: 65 },
+      { name: "Rajpath Boulevard Area", x: 35, y: 80 }
+    ],
+    agencies: {
+      roads: { name: "MCD Public Works Department", desc: "Primary responder: Urban bypass roads, sidewalks, flyover repairs" },
+      water: { name: "Delhi Jal Board (DJB)", desc: "Primary responder: Yamuna supply canals, household sewerage, water supply leaks" },
+      power: { name: "TPDDL / BSES Power Grid", desc: "Primary responder: High tension wires, overhead cable bundling, dark streetlights" }
+    },
+    budget: "₹9.5 Crores",
+    parks: [
+      { name: "India Gate Boulevard Lawns", x: 55, y: 60, w: 30, h: 28 },
+      { name: "Lodhi Historic Gardens", x: 20, y: 72, w: 18, h: 22 }
+    ],
+    waterBodies: [
+      { name: "Yamuna Canal Feed", x: 88, y: 50, w: 12, h: 100, rotate: -5 }
+    ],
+    roadsList: [
+      { name: "Rajpath Central Boulevard", x: 50, y: 55, w: 100, h: 3, rotate: 0, isPrimary: true },
+      { name: "Connaught Place Ring", x: 50, y: 30, w: 28, h: 28, isCircular: true, isPrimary: true },
+      { name: "Barakhamba Road Express", x: 68, y: 22, w: 2.5, h: 45, rotate: 40, isPrimary: false }
+    ]
+  },
+  {
+    id: "chennai",
+    cityName: "Chennai",
+    stateName: "Tamil Nadu",
+    latMin: 13.0200,
+    latMax: 13.0800,
+    lngMin: 80.2100,
+    lngMax: 80.2900,
+    landmarks: [
+      { name: "Marina Beach Promenade", x: 85, y: 50 },
+      { name: "T. Nagar Shopping District", x: 30, y: 70 },
+      { name: "Guindy National Park Edge", x: 15, y: 25 }
+    ],
+    agencies: {
+      roads: { name: "GCC Stormwater & Roads Wing", desc: "Primary responder: Pavement leveling, concrete roads, stormwater drain filters" },
+      water: { name: "CMWSSB Metro Water Board", desc: "Primary responder: Seawater desalination feeds, canal overflows, pipe repairs" },
+      power: { name: "TANGEDCO Electrical Utility", desc: "Primary responder: Street lamp fixtures, phase failures, grid repairs" }
+    },
+    budget: "₹5.2 Crores",
+    parks: [
+      { name: "Guindy Forest Reserve", x: 15, y: 22, w: 24, h: 22 }
+    ],
+    waterBodies: [
+      { name: "Bay of Bengal Shoreline", x: 88, y: 50, w: 18, h: 100 },
+      { name: "Adyar River Estuary", x: 45, y: 62, w: 100, h: 10, rotate: -12 }
+    ],
+    roadsList: [
+      { name: "Marina Beach Loop Rd", x: 79, y: 50, w: 2, h: 100, rotate: 1, isPrimary: true },
+      { name: "Mount Road Expressway", x: 40, y: 45, w: 100, h: 3, rotate: -25, isPrimary: true },
+      { name: "Usman Commercial Road", x: 28, y: 65, w: 2, h: 42, rotate: 8, isPrimary: false }
+    ]
+  },
+  {
+    id: "hyderabad",
+    cityName: "Hyderabad",
+    stateName: "Telangana",
+    latMin: 17.3400,
+    latMax: 17.4500,
+    lngMin: 78.3600,
+    lngMax: 78.4900,
+    landmarks: [
+      { name: "Charminar Heritage Circle", x: 50, y: 85 },
+      { name: "Hussain Sagar Lake Walkway", x: 45, y: 25 },
+      { name: "HITEC City Tech Corridor", x: 10, y: 40 }
+    ],
+    agencies: {
+      roads: { name: "GHMC Engineering Division", desc: "Primary responder: Concrete road corridors, pedestrian underpasses" },
+      water: { name: "HMWSSB Water Supply Division", desc: "Primary responder: Krishna & Godavari feeds, residential valve leakage" },
+      power: { name: "TSSPDCL Power Distribution", desc: "Primary responder: Distribution box sealing, smart streetlight replacements" }
+    },
+    budget: "₹6.1 Crores",
+    parks: [
+      { name: "KBR National Sanctuary", x: 18, y: 36, w: 22, h: 20 }
+    ],
+    waterBodies: [
+      { name: "Hussain Sagar Lake", x: 44, y: 24, w: 26, h: 22, rotate: -5 }
+    ],
+    roadsList: [
+      { name: "NH65 Highway Corridor", x: 50, y: 62, w: 100, h: 3, rotate: -6, isPrimary: true },
+      { name: "Inner Ring Expressway", x: 50, y: 50, w: 68, h: 68, isCircular: true, isPrimary: true },
+      { name: "HITEC Main Tech Road", x: 14, y: 32, w: 2, h: 48, rotate: 10, isPrimary: false }
+    ]
+  },
+  {
+    id: "kolkata",
+    cityName: "Kolkata",
+    stateName: "West Bengal",
+    latMin: 22.5200,
+    latMax: 22.5900,
+    lngMin: 88.3200,
+    lngMax: 88.3800,
+    landmarks: [
+      { name: "Victoria Memorial Gardens", x: 40, y: 65 },
+      { name: "Howrah Bridge Junction", x: 45, y: 15 },
+      { name: "Park Street Boulevard", x: 65, y: 50 }
+    ],
+    agencies: {
+      roads: { name: "KMC Civil Engineering Dept", desc: "Primary responder: Road grading, heritage paving repair, cobblestones" },
+      water: { name: "KMC Water Supply Department", desc: "Primary responder: Hooghly river filtration conduits, localized pipe leakage" },
+      power: { name: "CESC Electrical Supply", desc: "Primary responder: Overhead cabling, streetlamp restoration, box safety" }
+    },
+    budget: "₹4.2 Crores",
+    parks: [
+      { name: "Kolkata Maidan Greenery", x: 30, y: 54, w: 26, h: 32 }
+    ],
+    waterBodies: [
+      { name: "Hooghly River Canal", x: 10, y: 50, w: 16, h: 100, rotate: 3 }
+    ],
+    roadsList: [
+      { name: "Howrah Bridge Approach", x: 25, y: 18, w: 55, h: 3, rotate: 14, isPrimary: true },
+      { name: "Park Street Boulevard", x: 55, y: 52, w: 75, h: 2, rotate: -1, isPrimary: true },
+      { name: "AJC Bose Flyover Link", x: 48, y: 72, w: 90, h: 2, rotate: -12, isPrimary: false }
+    ]
+  }
+];
 
 export default function App() {
   // Application State
@@ -37,6 +238,23 @@ export default function App() {
   const [insights, setInsights] = useState<CivicInsights | null>(null);
   const [loadingInsights, setLoadingInsights] = useState<boolean>(false);
   const [loadingIssues, setLoadingIssues] = useState<boolean>(false);
+
+  // Dynamic Cities Config & active state
+  const [cities, setCities] = useState<CityConfig[]>(DEFAULT_CITIES);
+  const [selectedCityId, setSelectedCityId] = useState<string>("bengaluru");
+  const activeCity = cities.find(c => c.id === selectedCityId) || DEFAULT_CITIES[0];
+
+  // Map limits derived dynamically
+  const MAP_LAT_MIN = activeCity.latMin;
+  const MAP_LAT_MAX = activeCity.latMax;
+  const MAP_LNG_MIN = activeCity.lngMin;
+  const MAP_LNG_MAX = activeCity.lngMax;
+
+  // Authentication Switcher State
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
+  const [availableCitizens, setAvailableCitizens] = useState<UserProfile[]>([]);
+  const [loginInputUsername, setLoginInputUsername] = useState<string>("");
+  const [authError, setAuthError] = useState<string | null>(null);
   
   // UI Controls
   const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null);
@@ -51,8 +269,8 @@ export default function App() {
   const [newDescription, setNewDescription] = useState("");
   const [newCategory, setNewCategory] = useState("Roads & Sidewalks");
   const [newSeverity, setNewSeverity] = useState<"low" | "medium" | "high" | "critical">("medium");
-  const [newLat, setNewLat] = useState<number>(34.0582);
-  const [newLng, setNewLng] = useState<number>(-118.2581);
+  const [newLat, setNewLat] = useState<number>(12.97);
+  const [newLng, setNewLng] = useState<number>(77.59);
   const [newLocationName, setNewLocationName] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -66,14 +284,27 @@ export default function App() {
 
   // Map Simulation Coordinates and Interaction
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  // Default Map center reference representing Los Angeles Downtown area coordinates matching back-end seeds
-  const MAP_LAT_MIN = 34.0300;
-  const MAP_LAT_MAX = 34.0750;
-  const MAP_LNG_MIN = -118.2750;
-  const MAP_LNG_MAX = -118.2250;
 
   // Notification Toast state
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
+
+  // Interactive Map Enhancements States
+  const [zoomScale, setZoomScale] = useState<number>(1.0);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [rotation, setRotation] = useState<number>(0);
+  const [dragMode, setDragMode] = useState<"pan" | "rotate">("pan");
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [hasDragged, setHasDragged] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [mapStyle, setMapStyle] = useState<"grid" | "satellite">("grid");
+  const [isLegendExpanded, setIsLegendExpanded] = useState<boolean>(false);
+  const [searchFocused, setSearchFocused] = useState<boolean>(false);
+  const [showParks, setShowParks] = useState<boolean>(true);
+  const [showWater, setShowWater] = useState<boolean>(true);
+  const [showRoads, setShowRoads] = useState<boolean>(true);
+  const [showLandmarks, setShowLandmarks] = useState<boolean>(true);
+  const [isLayersOpen, setIsLayersOpen] = useState<boolean>(false);
 
   const triggerToast = (message: string, type: "success" | "error" | "info" = "success") => {
     setToast({ message, type });
@@ -84,21 +315,44 @@ export default function App() {
 
   // Fetch static endpoints
   useEffect(() => {
-    fetchIssues();
-    fetchProfile();
-    fetchInsights();
+    const init = async () => {
+      try {
+        const res = await fetch("/api/cities");
+        if (res.ok) {
+          const data = await res.json();
+          setCities(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch cities config", err);
+      }
+      fetchProfile();
+      fetchCitizens();
+    };
+    init();
   }, []);
 
-  const fetchIssues = async () => {
+  // Update dynamic coords and refetch issues/insights on selectedCityId change
+  useEffect(() => {
+    if (activeCity) {
+      setNewLat(parseFloat(((activeCity.latMin + activeCity.latMax) / 2).toFixed(5)));
+      setNewLng(parseFloat(((activeCity.lngMin + activeCity.lngMax) / 2).toFixed(5)));
+    }
+    fetchIssues(selectedCityId);
+    fetchInsights(selectedCityId);
+  }, [selectedCityId]);
+
+  const fetchIssues = async (cityId: string = selectedCityId) => {
     setLoadingIssues(true);
     try {
-      const res = await fetch("/api/issues");
+      const res = await fetch(`/api/issues?city=${cityId}`);
       if (res.ok) {
         const data = await res.json();
         setIssues(data);
         // Default to first issue if none selected
-        if (data.length > 0 && !selectedIssueId) {
+        if (data.length > 0) {
           setSelectedIssueId(data[0].id);
+        } else {
+          setSelectedIssueId(null);
         }
       } else {
         triggerToast("Failed to sync neighborhood reports", "error");
@@ -123,10 +377,67 @@ export default function App() {
     }
   };
 
-  const fetchInsights = async () => {
+  const fetchCitizens = async () => {
+    try {
+      const res = await fetch("/api/users");
+      if (res.ok) {
+        const data = await res.json();
+        setAvailableCitizens(data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSwitchLogin = async (usernameToLogin: string) => {
+    if (!usernameToLogin.trim()) {
+      setAuthError("Username is required");
+      return;
+    }
+    setAuthError(null);
+    try {
+      const res = await fetch("/api/user/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: usernameToLogin.trim() })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setProfile(data.profile);
+        setIsLoginModalOpen(false);
+        setLoginInputUsername("");
+        triggerToast(`Logged in as ${usernameToLogin.trim()}`, "success");
+        fetchIssues(selectedCityId);
+        fetchInsights(selectedCityId);
+        fetchCitizens();
+      } else {
+        const data = await res.json();
+        setAuthError(data.error || "Failed to log in");
+      }
+    } catch (err) {
+      setAuthError("Network authorization timeout.");
+    }
+  };
+
+  const handleSwitchLogout = async () => {
+    try {
+      const res = await fetch("/api/user/logout", { method: "POST" });
+      if (res.ok) {
+        setProfile(null);
+        triggerToast("Logged out from SmartCity Hub.", "info");
+        fetchIssues(selectedCityId);
+        fetchInsights(selectedCityId);
+        fetchCitizens();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchInsights = async (cityId: string = selectedCityId) => {
     setLoadingInsights(true);
     try {
-      const res = await fetch("/api/ai/insights");
+      const res = await fetch(`/api/ai/insights?city=${cityId}`);
       if (res.ok) {
         const data = await res.json();
         setInsights(data);
@@ -341,7 +652,8 @@ export default function App() {
           imageUrl: imagePreview ? "uploaded" : undefined,
           reportedBy: profile?.username || "SmartCityHero",
           locationName: newLocationName || `${newLat.toFixed(4)} N, ${newLng.toFixed(4)} W`,
-          aiSuggestedFix: aiResult?.aiSuggestedFix || "Inspection scheduled by utility services."
+          aiSuggestedFix: aiResult?.aiSuggestedFix || "Inspection scheduled by utility services.",
+          city: selectedCityId
         })
       });
 
@@ -360,7 +672,7 @@ export default function App() {
         triggerToast("Issue published! Awarded +50 points.");
         
         // Refresh insights
-        fetchInsights();
+        fetchInsights(selectedCityId);
       }
     } catch (err) {
       triggerToast("Error saving ticket", "error");
@@ -384,20 +696,44 @@ export default function App() {
     }
   };
 
-  // Interactive Maps click simulator: Convert click on the container element relative-pixel vectors to Latitude and Longitude values
+  // Interactive Maps click simulator: Convert click on the container element relative-pixel vectors to Latitude and Longitude values, taking zoom, pan, and rotation into account
   const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!mapContainerRef.current) return;
-    const rect = mapContainerRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    // Percentage ratios
-    const ratioX = x / rect.width;
-    const ratioY = y / rect.height;
+    if (hasDragged) {
+      // It was a pan drag or rotation drag, ignore click
+      return;
+    }
+    const viewportGrid = document.getElementById("viewport-grid");
+    if (!viewportGrid) return;
+    const rect = viewportGrid.getBoundingClientRect();
+
+    // Map center relative to client coordinates
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    // Click relative to map center, accounting for the current panOffset
+    const dx = e.clientX - (cx + panOffset.x);
+    const dy = e.clientY - (cy + panOffset.y);
+
+    // Rotate back by -rotation (to align with unrotated map coordinate system)
+    const rad = (-rotation * Math.PI) / 180;
+    const rx = dx * Math.cos(rad) - dy * Math.sin(rad);
+    const ry = dx * Math.sin(rad) + dy * Math.cos(rad);
+
+    // Scale back down by zoomScale
+    const unscaledX = rx / zoomScale;
+    const unscaledY = ry / zoomScale;
+
+    // Convert back to absolute container percentage (where center of container is 50%, 50%)
+    const ratioX = (unscaledX / rect.width) + 0.5;
+    const ratioY = (unscaledY / rect.height) + 0.5;
+
+    // Bound values inside container boundaries [0, 1]
+    const boundedRatioX = Math.max(0, Math.min(1, ratioX));
+    const boundedRatioY = Math.max(0, Math.min(1, ratioY));
 
     // Estimate coordinates
-    const calcLng = MAP_LNG_MIN + ratioX * (MAP_LNG_MAX - MAP_LNG_MIN);
-    const calcLat = MAP_LAT_MAX - ratioY * (MAP_LAT_MAX - MAP_LAT_MIN); // Invert Y as Latitude increases upward.
+    const calcLng = MAP_LNG_MIN + boundedRatioX * (MAP_LNG_MAX - MAP_LNG_MIN);
+    const calcLat = MAP_LAT_MAX - boundedRatioY * (MAP_LAT_MAX - MAP_LAT_MIN); // Invert Y as Latitude increases upward.
 
     setNewLat(parseFloat(calcLat.toFixed(5)));
     setNewLng(parseFloat(calcLng.toFixed(5)));
@@ -406,6 +742,148 @@ export default function App() {
     // Open reporting model and direct user
     setIsReportOpen(true);
     triggerToast(`Location pin placed at ${calcLat.toFixed(4)}, ${calcLng.toFixed(4)}. File details below!`, "info");
+  };
+
+  // Drag to Pan or Rotate Handlers for Map
+  const handleMapMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return; // only left click
+    setIsDragging(true);
+    setHasDragged(false);
+    
+    if (e.shiftKey) {
+      setDragMode("rotate");
+      setDragStart({ x: e.clientX, y: e.clientY });
+    } else {
+      setDragMode("pan");
+      setDragStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
+    }
+  };
+
+  const handleMapMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    
+    if (dragMode === "rotate") {
+      const dx = e.clientX - dragStart.x;
+      // Adjust rotation by delta x (1px = 0.8 degrees)
+      setRotation(prev => {
+        const nextRot = (prev + dx * 0.8) % 360;
+        return nextRot < 0 ? nextRot + 360 : nextRot;
+      });
+      setDragStart({ x: e.clientX, y: e.clientY });
+      setHasDragged(true);
+    } else {
+      const dx = e.clientX - dragStart.x;
+      const dy = e.clientY - dragStart.y;
+
+      if (Math.abs(dx - panOffset.x) > 3 || Math.abs(dy - panOffset.y) > 3) {
+        setHasDragged(true);
+      }
+      setPanOffset({ x: dx, y: dy });
+    }
+  };
+
+  const handleMapMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // Center Map view on specific relative percentage coordinates
+  const centerOnRelativeCoords = (xPercent: number, yPercent: number, targetZoom = 1.5) => {
+    if (!mapContainerRef.current) return;
+    const rect = mapContainerRef.current.getBoundingClientRect();
+    
+    // Get unscaled map container size
+    const unscaledWidth = rect.width / zoomScale;
+    const unscaledHeight = rect.height / zoomScale;
+
+    setZoomScale(targetZoom);
+    
+    // Center calculation: find offset to bring (xPercent, yPercent) to center (50%, 50%)
+    const dx = - (xPercent / 100 - 0.5) * unscaledWidth * targetZoom;
+    const dy = - (yPercent / 100 - 0.5) * unscaledHeight * targetZoom;
+
+    setPanOffset({ x: dx, y: dy });
+  };
+
+  // Zoom control triggers
+  const handleZoomIn = () => {
+    setZoomScale(prev => Math.min(2.5, prev + 0.25));
+  };
+
+  const handleZoomOut = () => {
+    setZoomScale(prev => {
+      const next = Math.max(0.5, prev - 0.25);
+      if (next <= 1.0) {
+        setPanOffset({ x: 0, y: 0 });
+      }
+      return next;
+    });
+  };
+
+  const handleZoomReset = () => {
+    setZoomScale(1.0);
+    setPanOffset({ x: 0, y: 0 });
+    setRotation(0);
+    triggerToast("Map scale, panning, and rotation reset", "info");
+  };
+
+  const handleMapWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    // Zoom in or out relative to current zoomScale
+    const delta = e.deltaY < 0 ? 0.15 : -0.15;
+    setZoomScale(prev => {
+      const next = Math.max(0.5, Math.min(2.5, prev + delta));
+      if (next <= 1.0 && prev > 1.0) {
+        setPanOffset({ x: 0, y: 0 });
+      }
+      return parseFloat(next.toFixed(2));
+    });
+  };
+
+  // Dynamic landmark locations matching our map decals for the active city
+  const LANDMARKS = activeCity.landmarks;
+
+  // Helper search result filtering
+  const getSearchResults = () => {
+    if (!searchQuery.trim()) return [];
+    const query = searchQuery.toLowerCase().trim();
+
+    const matchedLandmarks = LANDMARKS.filter(landmark =>
+      landmark.name.toLowerCase().includes(query)
+    ).map(l => ({
+      type: "landmark",
+      id: `landmark-${l.name}`,
+      name: l.name,
+      x: l.x,
+      y: l.y,
+      subtext: "Simulated Urban Landmark Area"
+    }));
+
+    const matchedIssues = issues.filter(issue =>
+      issue.title.toLowerCase().includes(query) ||
+      issue.locationName.toLowerCase().includes(query) ||
+      issue.category.toLowerCase().includes(query)
+    ).map(issue => {
+      const { x, y } = getMapCoordinates(issue.lat, issue.lng);
+      return {
+        type: "issue",
+        id: issue.id,
+        name: issue.title,
+        x,
+        y,
+        subtext: `${issue.category} • ${issue.locationName}`
+      };
+    });
+
+    return [...matchedLandmarks, ...matchedIssues].slice(0, 5);
+  };
+
+  const handleSelectSearchItem = (item: { type: string; id: string; name: string; x: number; y: number }) => {
+    centerOnRelativeCoords(item.x, item.y, 1.75);
+    if (item.type === "issue") {
+      setSelectedIssueId(item.id);
+    }
+    setSearchQuery(item.name);
+    setSearchFocused(false);
+    triggerToast(`Centered view on: ${item.name}`, "success");
   };
 
   // Helper converter: translates Lat Long coordinates into relative percentage locations for positioning elements inside simulated map frame
@@ -445,6 +923,18 @@ export default function App() {
       default:
         return "bg-slate-500/15 text-slate-600 border border-slate-500/30 font-normal";
     }
+  };
+
+  const getHeadingDirection = (deg: number) => {
+    const d = (deg % 360 + 360) % 360;
+    if (d >= 337.5 || d < 22.5) return "N";
+    if (d >= 22.5 && d < 67.5) return "NE";
+    if (d >= 67.5 && d < 112.5) return "E";
+    if (d >= 112.5 && d < 157.5) return "SE";
+    if (d >= 157.5 && d < 202.5) return "S";
+    if (d >= 202.5 && d < 247.5) return "SW";
+    if (d >= 247.5 && d < 292.5) return "W";
+    return "NW";
   };
 
   const getStatusBadgeClass = (status: string) => {
@@ -509,11 +999,32 @@ export default function App() {
             </svg>
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-xl font-bold tracking-tight text-slate-900">SmartCity<span className="text-indigo-600">Hero</span></h1>
-              <span className="px-2 py-0.5 bg-indigo-50 text-[10px] text-indigo-700 font-bold rounded-md uppercase tracking-wider">MURAL-HQ</span>
+              <div className="relative inline-block text-left">
+                <select
+                  id="city-state-selector"
+                  value={selectedCityId}
+                  onChange={(e) => {
+                    setSelectedCityId(e.target.value);
+                    triggerToast(`Switched active state/city to ${cities.find(c => c.id === e.target.value)?.cityName}, ${cities.find(c => c.id === e.target.value)?.stateName}`, "info");
+                  }}
+                  className="bg-indigo-50 border border-indigo-100 text-indigo-700 text-[11px] font-bold rounded-lg px-2.5 py-1 pr-6 hover:bg-indigo-100 hover:border-indigo-200 transition-colors cursor-pointer appearance-none outline-none focus:ring-1 focus:ring-indigo-500 shadow-sm"
+                >
+                  {cities.map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {city.stateName} ({city.cityName})
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-1.5 flex items-center text-indigo-700">
+                  <svg className="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                  </svg>
+                </div>
+              </div>
             </div>
-            <p className="text-[10.5px] text-slate-500 font-semibold tracking-wide">Report. Verify. Resolve. Build a Smarter City Together. 🚀🏙️</p>
+            <p className="text-[10.5px] text-slate-500 font-semibold tracking-wide">National Citizen Civic Hub for all Indian States & Municipal Administrations. 🚀🏙️</p>
           </div>
         </div>
 
@@ -577,22 +1088,51 @@ export default function App() {
             Reset State
           </button>
           
-          <div className="flex items-center gap-3">
-            <div className="text-right">
-              <p className="text-xs font-bold text-slate-800 leading-tight">{profile?.username || "Guest User"}</p>
-              <p className="text-[10px] text-indigo-600 font-extrabold uppercase mt-0.5">LEVEL {profile?.level || 1} CITIZEN</p>
-            </div>
-            <div className="w-9 h-9 rounded-full bg-slate-200 border border-slate-200 shadow overflow-hidden relative group shrink-0">
-              <img 
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" 
-                alt="User" 
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-indigo-600/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <Award className="w-4 h-4 text-white" />
+          {profile && profile.username ? (
+            <div className="flex items-center gap-3 bg-indigo-50/70 hover:bg-indigo-50 px-3 py-1.5 rounded-2xl border border-indigo-100/50 transition duration-150">
+              <div className="text-right">
+                <p className="text-xs font-black text-slate-800 leading-tight truncate max-w-[120px]">{profile.username}</p>
+                <button 
+                  onClick={() => { fetchCitizens(); setIsLoginModalOpen(true); }}
+                  className="text-[10px] text-indigo-650 hover:text-indigo-800 font-bold underline cursor-pointer block"
+                >
+                  Switch Profile
+                </button>
               </div>
+              <button 
+                id="btn-profile-card-open"
+                onClick={() => { fetchCitizens(); setIsLoginModalOpen(true); }}
+                className="w-9 h-9 rounded-full bg-indigo-100 border border-indigo-200 shadow overflow-hidden relative group shrink-0 cursor-pointer"
+                title="Manage accounts and points"
+              >
+                <img 
+                  src={`https://api.dicebear.com/7.x/bottts/svg?seed=${profile.username}`} 
+                  alt="Active Citizen Avatar" 
+                  className="w-full h-full object-cover"
+                />
+              </button>
+              <button
+                onClick={handleSwitchLogout}
+                className="text-[10px] bg-white text-rose-600 hover:bg-rose-50 border border-slate-200 rounded-lg px-2 py-1 font-bold transition-all shrink-0 cursor-pointer"
+                title="Logout current user"
+              >
+                Log Out
+              </button>
             </div>
-          </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <div className="text-right">
+                <p className="text-xs font-bold text-slate-500 leading-tight">Anonymous Guest</p>
+                <p className="text-[10px] text-slate-400 font-medium">Limited Access</p>
+              </div>
+              <button
+                onClick={() => { fetchCitizens(); setIsLoginModalOpen(true); }}
+                className="px-4 py-1.5 text-xs font-extrabold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-xl shadow transition duration-150 cursor-pointer shrink-0"
+              >
+                Log In
+              </button>
+            </div>
+          )}
         </div>
       </nav>
 
@@ -802,145 +1342,423 @@ export default function App() {
               {/* Map background grid representing stylized neighborhood block segments */}
               <div 
                 id="viewport-grid"
-                className="absolute inset-0 z-0 bg-slate-100 cursor-crosshair transition-all duration-300"
-                style={{
-                  backgroundImage: "radial-gradient(#cbd5e1 2px, transparent 2px)",
-                  backgroundSize: "32px 32px",
-                }}
-                onClick={handleMapClick}
-                ref={mapContainerRef}
+                className="absolute inset-0 z-0 bg-slate-100 transition-all duration-300 overflow-hidden"
               >
-                {/* Simulated Parks, Rivers and Roads landmarks vector shapes background */}
-                <div className="absolute top-1/4 left-1/4 w-40 h-32 bg-emerald-100 rounded-full mix-blend-multiply filter blur-xl opacity-60 pointer-events-none" />
-                <div className="absolute bottom-1/4 right-1/4 w-52 h-44 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-60 pointer-events-none" />
-                <div className="absolute top-1/2 left-1/3 w-36 h-28 bg-indigo-100 rounded-full mix-blend-multiply filter blur-xl opacity-50 pointer-events-none" />
-                
-                {/* Map Grid Roads Visualization */}
-                <div className="absolute top-[40%] left-0 w-full h-[6px] bg-slate-200/80 -rotate-2 pointer-events-none" />
-                <div className="absolute top-[70%] left-0 w-full h-[8px] bg-slate-200/80 rotate-3 pointer-events-none" />
-                <div className="absolute left-[30%] top-0 h-full w-[6px] bg-slate-200/80 rotate-12 pointer-events-none" />
-                <div className="absolute left-[65%] top-0 h-full w-[8px] bg-slate-200/80 -rotate-12 pointer-events-none" />
+                {/* ZOOMABLE AND PANNABLE MAP LAYER */}
+                <div
+                  id="map-transform-container"
+                  ref={mapContainerRef}
+                  className="absolute inset-0 select-none cursor-grab active:cursor-grabbing origin-center"
+                  style={{
+                    transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomScale}) rotate(${rotation}deg)`,
+                    transition: isDragging ? "none" : "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+                  }}
+                  onMouseDown={handleMapMouseDown}
+                  onMouseMove={handleMapMouseMove}
+                  onMouseUp={handleMapMouseUp}
+                  onMouseLeave={handleMapMouseUp}
+                  onClick={handleMapClick}
+                  onWheel={handleMapWheel}
+                >
+                  {/* Grid background layer */}
+                  <div 
+                    className={`absolute inset-0 transition-opacity duration-500 ${
+                      mapStyle === "grid" ? "opacity-100" : "opacity-0"
+                    }`}
+                    style={{
+                      backgroundImage: "radial-gradient(#cbd5e1 2px, transparent 2px)",
+                      backgroundSize: "32px 32px",
+                    }}
+                  />
 
-                {/* Simulated Labels */}
-                <span className="absolute top-8 left-12 text-[10px] font-bold text-slate-400 bg-slate-50/80 px-2 py-0.5 rounded shadow-sm opacity-60 select-none">Downtown East Recreation Hub</span>
-                <span className="absolute bottom-12 right-20 text-[10px] font-bold text-slate-400 bg-slate-50/80 px-2 py-0.5 rounded shadow-sm opacity-60 select-none">District 12 Maplewood Park</span>
-                <span className="absolute top-1/2 right-12 text-[10px] font-bold text-slate-400 bg-slate-50/80 px-2 py-0.5 rounded shadow-sm opacity-60 select-none">Brook Lane Corridor</span>
+                  {/* Satellite background layer */}
+                  <div 
+                    className={`absolute inset-0 bg-slate-900 bg-cover bg-center grayscale contrast-110 brightness-90 transition-opacity duration-500 ${
+                      mapStyle === "satellite" ? "opacity-35" : "opacity-0"
+                    }`}
+                    style={{
+                      backgroundImage: "url('https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?auto=format&fit=crop&w=1200&q=80')"
+                    }}
+                  />
 
-                <div className="absolute top-2 left-2 bg-slate-800/85 text-white font-mono text-[9px] px-2 py-1 rounded">
-                  Map Range: {MAP_LAT_MIN.toFixed(4)} N - {MAP_LAT_MAX.toFixed(4)} N
-                </div>
-
-                {/* PLOTTED ISSUE MARKERS */}
-                {issues.map(issue => {
-                  const isSelected = selectedIssueId === issue.id;
-                  const { x, y } = getMapCoordinates(issue.lat, issue.lng);
-                  
-                  // Color codes for markers
-                  let pinColorClass = "bg-slate-500 shadow-indigo-150";
-                  if (issue.status === "resolved") {
-                    pinColorClass = "bg-emerald-500 shadow-emerald-200";
-                  } else if (issue.severity === "critical") {
-                    pinColorClass = "bg-red-500 shadow-red-200 anim-pulse";
-                  } else if (issue.severity === "high") {
-                    pinColorClass = "bg-orange-500 shadow-orange-200";
-                  } else {
-                    pinColorClass = "bg-amber-500 shadow-amber-200";
-                  }
-
-                  return (
+                  {/* Dynamic Parks, Rivers, and Roads vector shapes background */}
+                  {showParks && activeCity.parks?.map((park, i) => (
                     <div
-                      id={`map-marker-${issue.id}`}
-                      key={issue.id}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedIssueId(issue.id);
-                        triggerToast(`Inspecting report: ${issue.title}`, "info");
-                      }}
-                      className="absolute group z-10 transition-transform hover:scale-125"
+                      key={`park-${i}`}
+                      className="absolute bg-emerald-200/50 border border-emerald-300/30 rounded-3xl flex items-center justify-center pointer-events-none transition-all duration-500 overflow-hidden shadow-sm"
                       style={{
-                        left: `${x}%`,
-                        top: `${y}%`,
+                        left: `${park.x}%`,
+                        top: `${park.y}%`,
+                        width: `${park.w}%`,
+                        height: `${park.h}%`,
                         transform: "translate(-50%, -50%)"
                       }}
                     >
-                      {/* Ring pulsing for highlighted selection */}
-                      {isSelected && (
-                        <div className="absolute -inset-4 rounded-full bg-indigo-600/30 animate-pulse pointer-events-none" />
-                      )}
+                      <span className="text-[8px] sm:text-[9.5px] font-bold text-emerald-800/50 font-sans tracking-wide uppercase select-none text-center px-1">
+                        {park.name}
+                      </span>
+                    </div>
+                  ))}
 
-                      {/* Pin Button */}
-                      <button
-                        className={`w-8 h-8 rounded-full border-[3px] border-white shadow-xl flex items-center justify-center text-white cursor-pointer transition ${pinColorClass} ${
-                          isSelected ? "scale-110 ring-4 ring-indigo-500/20" : ""
-                        }`}
+                  {showWater && activeCity.waterBodies?.map((water, i) => (
+                    <div
+                      key={`water-${i}`}
+                      className="absolute bg-sky-200/50 border border-sky-300/30 rounded-2xl flex items-center justify-center pointer-events-none transition-all duration-500 overflow-hidden shadow-sm"
+                      style={{
+                        left: `${water.x}%`,
+                        top: `${water.y}%`,
+                        width: `${water.w}%`,
+                        height: `${water.h}%`,
+                        transform: `translate(-50%, -50%) rotate(${water.rotate || 0}deg)`
+                      }}
+                    >
+                      <span className="text-[8px] sm:text-[9.5px] font-bold text-sky-800/50 font-sans tracking-wide uppercase select-none text-center px-1">
+                        {water.name}
+                      </span>
+                    </div>
+                  ))}
+
+                  {showRoads && activeCity.roadsList?.map((road, i) => {
+                    if (road.isCircular) {
+                      return (
+                        <div
+                          key={`road-${i}`}
+                          className="absolute border-[4px] border-slate-300/45 rounded-full flex items-center justify-center pointer-events-none transition-all duration-500"
+                          style={{
+                            left: `${road.x}%`,
+                            top: `${road.y}%`,
+                            width: `${road.w}%`,
+                            height: `${road.h}%`,
+                            transform: "translate(-50%, -50%)"
+                          }}
+                        >
+                          <span className="text-[7.5px] font-bold text-slate-400/80 font-mono uppercase tracking-wider bg-white/80 px-1 py-0.5 rounded-md select-none transform -translate-y-1/2">
+                            {road.name}
+                          </span>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div
+                        key={`road-${i}`}
+                        className={`absolute bg-slate-300/40 pointer-events-none transition-all duration-500 flex items-center justify-center`}
+                        style={{
+                          left: `${road.x}%`,
+                          top: `${road.y}%`,
+                          width: `${road.isPrimary ? "100%" : `${road.w}%`}`,
+                          height: `${road.h}%`,
+                          transform: `translate(-50%, -50%) rotate(${road.rotate || 0}deg)`,
+                          borderRadius: "4px"
+                        }}
                       >
-                        {getCategoryIcon(issue.category)}
-                      </button>
+                        <span className="text-[7px] font-bold text-slate-400/80 font-mono uppercase tracking-wider bg-white/70 px-1 rounded select-none whitespace-nowrap">
+                          {road.name}
+                        </span>
+                      </div>
+                    );
+                  })}
 
-                      {/* Hover Info window with Dynamic Verification Impact Score */}
-                      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-slate-900/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-2xl w-56 hidden group-hover:block z-50 text-left pointer-events-none border border-slate-800 transition-all duration-200">
-                        <div className="flex justify-between items-center mb-1.5">
-                          <span className={`px-2 py-0.5 text-[8px] uppercase rounded font-bold ${getSeverityBadgeClass(issue.severity)}`}>
-                            {issue.severity}
-                          </span>
-                          <span className="text-[9px] text-slate-400 font-medium">
-                            {issue.status.replace("_", " ").toUpperCase()}
-                          </span>
-                        </div>
-                        
-                        <p className="text-xs font-bold text-slate-100 line-clamp-1">{issue.title}</p>
-                        <p className="text-[9px] text-slate-400 line-clamp-1 mt-0.5 flex items-center gap-1">
-                          <MapPin className="w-2.5 h-2.5 shrink-0 text-slate-500" />
-                          {issue.locationName}
-                        </p>
+                  {/* Simulated Labels */}
+                  {showLandmarks && LANDMARKS.map((landmark, idx) => (
+                    <span
+                      key={idx}
+                      className="absolute text-[10px] font-bold text-slate-500 bg-white/90 border border-slate-100 px-2 py-0.5 rounded-lg shadow-sm opacity-90 select-none transition-all duration-300 pointer-events-none"
+                      style={{
+                        left: `${landmark.x}%`,
+                        top: `${landmark.y}%`,
+                        transform: "translate(-50%, -50%)"
+                      }}
+                    >
+                      📍 {landmark.name}
+                    </span>
+                  ))}
 
-                        {/* Verification-based Impact Score Badge */}
-                        {(() => {
-                          const score = (issue.upvotes * 8) + (issue.verifications * 25);
-                          let badgeStyle = "bg-slate-800/80 text-slate-400 border-slate-700";
-                          let dotStyle = "bg-slate-500";
-                          let impactName = "Initiated";
+                  {/* PLOTTED ISSUE MARKERS */}
+                  {issues.map((issue, idx) => {
+                    const isSelected = selectedIssueId === issue.id;
+                    const { x, y } = getMapCoordinates(issue.lat, issue.lng);
+                    
+                    // Color codes for markers
+                    let pinColorClass = "bg-slate-500 shadow-indigo-150";
+                    if (issue.status === "resolved") {
+                      pinColorClass = "bg-emerald-500 shadow-emerald-200";
+                    } else if (issue.severity === "critical") {
+                      pinColorClass = "bg-red-500 shadow-red-200 anim-pulse";
+                    } else if (issue.severity === "high") {
+                      pinColorClass = "bg-orange-500 shadow-orange-200";
+                    } else {
+                      pinColorClass = "bg-amber-500 shadow-amber-200";
+                    }
 
-                          if (issue.verifications === 1) {
-                            badgeStyle = "bg-sky-500/10 text-sky-300 border-sky-500/25";
-                            dotStyle = "bg-sky-450";
-                            impactName = "Community Active";
-                          } else if (issue.verifications >= 2 && issue.verifications < 5) {
-                            badgeStyle = "bg-amber-500/10 text-amber-300 border-amber-500/25";
-                            dotStyle = "bg-amber-400";
-                            impactName = "High Priority Impact";
-                          } else if (issue.verifications >= 5) {
-                            badgeStyle = "bg-rose-500/15 text-rose-300 border-rose-500/25";
-                            dotStyle = "bg-rose-400 animate-pulse";
-                            impactName = "Critical Civic Priority";
-                          }
+                    return (
+                      <div
+                        key={issue.id}
+                        className="absolute z-10"
+                        style={{
+                          left: `${x}%`,
+                          top: `${y}%`,
+                          transform: `translate(-50%, -50%) rotate(${-rotation}deg)`,
+                          transition: "transform 0.1s ease-out"
+                        }}
+                      >
+                        {/* Ring pulsing for highlighted selection */}
+                        {isSelected && (
+                          <div className="absolute -inset-4 rounded-full bg-indigo-600/30 animate-pulse pointer-events-none" />
+                        )}
 
-                          return (
-                            <div className="mt-2.5 pt-2 border-t border-slate-800/90 space-y-2">
-                              <div className="flex justify-between items-center">
-                                <span className="text-[9px] text-slate-400 font-medium">Impact Score</span>
-                                <span className="text-xs font-black text-white font-mono tracking-wider">{score} pts</span>
-                              </div>
-                              <div className={`flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[8px] font-bold ${badgeStyle}`}>
-                                <span className={`w-1.5 h-1.5 rounded-full ${dotStyle}`} />
-                                <span className="uppercase tracking-wider truncate">{impactName}</span>
-                              </div>
+                        {/* Subtle Entrance Animation Wrapper */}
+                        <motion.div
+                          id={`map-marker-${issue.id}`}
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 260,
+                            damping: 18,
+                            delay: Math.min(1.2, idx * 0.04)
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedIssueId(issue.id);
+                            triggerToast(`Inspecting report: ${issue.title}`, "info");
+                          }}
+                          className="group cursor-pointer transition hover:scale-115"
+                        >
+                          {/* Pin Button */}
+                          <button
+                            className={`w-8 h-8 rounded-full border-[3px] border-white shadow-xl flex items-center justify-center text-white cursor-pointer transition ${pinColorClass} ${
+                              isSelected ? "scale-110 ring-4 ring-indigo-500/20" : ""
+                            }`}
+                          >
+                            {getCategoryIcon(issue.category)}
+                          </button>
+
+                          {/* Hover Info window with Dynamic Verification Impact Score */}
+                          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-slate-900/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-2xl w-56 hidden group-hover:block z-50 text-left pointer-events-none border border-slate-800 transition-all duration-200">
+                            <div className="flex justify-between items-center mb-1.5">
+                              <span className={`px-2 py-0.5 text-[8px] uppercase rounded font-bold ${getSeverityBadgeClass(issue.severity)}`}>
+                                {issue.severity}
+                              </span>
+                              <span className="text-[9px] text-slate-400 font-medium">
+                                {issue.status.replace("_", " ").toUpperCase()}
+                              </span>
                             </div>
-                          );
-                        })()}
+                            
+                            <p className="text-xs font-bold text-slate-100 line-clamp-1">{issue.title}</p>
+                            <p className="text-[9px] text-slate-400 line-clamp-1 mt-0.5 flex items-center gap-1">
+                              <MapPin className="w-2.5 h-2.5 shrink-0 text-slate-500" />
+                              {issue.locationName}
+                            </p>
 
-                        <div className="flex justify-between items-center mt-2.5 pt-2 border-t border-slate-800/95 text-[9px] text-slate-400 font-semibold">
-                          <span className="flex items-center gap-1">
-                            <ThumbsUp className="w-3.5 h-3.5 text-slate-500" /> {issue.upvotes} Votes
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <CheckCircle className="w-3.5 h-3.5 text-slate-500" /> {issue.verifications} Verified
-                          </span>
+                            {/* Verification-based Impact Score Badge */}
+                            {(() => {
+                              const score = (issue.upvotes * 8) + (issue.verifications * 25);
+                              let badgeStyle = "bg-slate-800/80 text-slate-400 border-slate-700";
+                              let dotStyle = "bg-slate-500";
+                              let impactName = "Initiated";
+
+                              if (issue.verifications === 1) {
+                                badgeStyle = "bg-sky-500/10 text-sky-300 border-sky-500/25";
+                                dotStyle = "bg-sky-450";
+                                impactName = "Community Active";
+                              } else if (issue.verifications >= 2 && issue.verifications < 5) {
+                                badgeStyle = "bg-amber-500/10 text-amber-300 border-amber-500/25";
+                                dotStyle = "bg-amber-400";
+                                impactName = "High Priority Impact";
+                              } else if (issue.verifications >= 5) {
+                                badgeStyle = "bg-rose-500/15 text-rose-300 border-rose-500/25";
+                                dotStyle = "bg-rose-400 animate-pulse";
+                                impactName = "Critical Civic Priority";
+                              }
+
+                              return (
+                                <div className="mt-2.5 pt-2 border-t border-slate-800/90 space-y-2">
+                                  <div className="flex justify-between items-center">
+                                    <span className="text-[9px] text-slate-400 font-medium">Impact Score</span>
+                                    <span className="text-xs font-black text-white font-mono tracking-wider">{score} pts</span>
+                                  </div>
+                                  <div className={`flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[8px] font-bold ${badgeStyle}`}>
+                                    <span className={`w-1.5 h-1.5 rounded-full ${dotStyle}`} />
+                                    <span className="uppercase tracking-wider truncate">{impactName}</span>
+                                  </div>
+                                </div>
+                              );
+                            })()}
+
+                            <div className="flex justify-between items-center mt-2.5 pt-2 border-t border-slate-800/95 text-[9px] text-slate-400 font-semibold">
+                              <span className="flex items-center gap-1">
+                                <ThumbsUp className="w-3.5 h-3.5 text-slate-500" /> {issue.upvotes} Votes
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <CheckCircle className="w-3.5 h-3.5 text-slate-500" /> {issue.verifications} Verified
+                              </span>
+                            </div>
+                          </div>
+                        </motion.div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* FLOATING HUD: Top-Left Search and Map Style controls */}
+              <div id="map-controls-hud-top-left" className="absolute top-6 left-6 z-20 flex flex-col sm:flex-row gap-2 max-w-[calc(100%-48px)] sm:max-w-md pointer-events-auto">
+                {/* Search Bar Input Container */}
+                <div className="relative flex-1 min-w-[200px] bg-white/95 backdrop-blur shadow-lg border border-slate-200/80 rounded-2xl">
+                  <div className="flex items-center px-3 py-2">
+                    <Search className="w-4 h-4 text-slate-400 shrink-0 mr-2" />
+                    <input
+                      type="text"
+                      placeholder="Search landmarks or issues..."
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setSearchFocused(true);
+                      }}
+                      onFocus={() => setSearchFocused(true)}
+                      className="w-full text-xs bg-transparent border-none outline-none text-slate-800 placeholder-slate-400 focus:ring-0"
+                    />
+                    {searchQuery && (
+                      <button
+                        onClick={() => {
+                          setSearchQuery("");
+                          setSearchFocused(false);
+                        }}
+                        className="text-slate-400 hover:text-slate-600 focus:outline-none ml-1.5 cursor-pointer"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Search suggestions dropdown */}
+                  {searchFocused && searchQuery.trim() && (
+                    <div className="absolute left-0 right-0 mt-1.5 bg-white rounded-2xl shadow-xl border border-slate-200/80 max-h-60 overflow-y-auto overflow-x-hidden z-50 animate-fade-in divide-y divide-slate-100">
+                      {getSearchResults().length === 0 ? (
+                        <div className="p-3 text-[11px] text-slate-400 italic text-center">
+                          No matches found
                         </div>
+                      ) : (
+                        getSearchResults().map((item) => (
+                          <button
+                            key={item.id}
+                            onMouseDown={(e) => {
+                              e.preventDefault(); // prevent input onBlur from closing immediately
+                              handleSelectSearchItem(item);
+                            }}
+                            className="w-full text-left p-2.5 hover:bg-slate-50 flex items-start gap-2.5 transition duration-150 cursor-pointer"
+                          >
+                            <div className="mt-0.5 shrink-0">
+                              {item.type === "landmark" ? (
+                                <Compass className="w-4 h-4 text-indigo-500" />
+                              ) : (
+                                <MapPin className="w-4 h-4 text-slate-500" />
+                              )}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-bold text-slate-800 truncate">{item.name}</p>
+                              <p className="text-[10px] text-slate-400 truncate mt-0.5">{item.subtext}</p>
+                            </div>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Background Map View Toggle */}
+                <div className="flex bg-white/95 backdrop-blur p-1 rounded-2xl shadow-lg border border-slate-200/80 shrink-0 self-start sm:self-auto">
+                  <button
+                    onClick={() => setMapStyle("grid")}
+                    className={`px-3 py-1.5 rounded-xl text-[10px] font-bold transition duration-150 cursor-pointer ${
+                      mapStyle === "grid"
+                        ? "bg-indigo-600 text-white shadow-sm"
+                        : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+                    }`}
+                  >
+                    Grid
+                  </button>
+                  <button
+                    onClick={() => setMapStyle("satellite")}
+                    className={`px-3 py-1.5 rounded-xl text-[10px] font-bold transition duration-150 cursor-pointer ${
+                      mapStyle === "satellite"
+                        ? "bg-indigo-600 text-white shadow-sm"
+                        : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+                    }`}
+                  >
+                    Satellite
+                  </button>
+                </div>
+
+                {/* Interactive Map Layers Selector Button & Popover */}
+                <div className="relative">
+                  <button
+                    onClick={() => setIsLayersOpen(!isLayersOpen)}
+                    className={`p-2 bg-white/95 backdrop-blur shadow-lg border border-slate-200/80 rounded-2xl flex items-center justify-center hover:bg-slate-50 transition active:scale-95 cursor-pointer text-slate-600 ${isLayersOpen ? "ring-2 ring-indigo-500 text-indigo-600" : ""}`}
+                    title="Toggle Map Layers"
+                  >
+                    <Layers className="w-4.5 h-4.5" />
+                  </button>
+
+                  {isLayersOpen && (
+                    <div className="absolute left-0 mt-2 bg-white/95 backdrop-blur rounded-2xl shadow-xl border border-slate-200/80 p-3 w-48 z-50 animate-fade-in space-y-2.5">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Map Layers</p>
+                      
+                      <div className="space-y-2 text-xs">
+                        <label className="flex items-center gap-2 cursor-pointer select-none font-medium text-slate-700 hover:text-slate-950 transition-colors">
+                          <input
+                            type="checkbox"
+                            checked={showParks}
+                            onChange={(e) => setShowParks(e.target.checked)}
+                            className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5"
+                          />
+                          Parks & Greenery
+                        </label>
+
+                        <label className="flex items-center gap-2 cursor-pointer select-none font-medium text-slate-700 hover:text-slate-950 transition-colors">
+                          <input
+                            type="checkbox"
+                            checked={showWater}
+                            onChange={(e) => setShowWater(e.target.checked)}
+                            className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5"
+                          />
+                          Water Channels
+                        </label>
+
+                        <label className="flex items-center gap-2 cursor-pointer select-none font-medium text-slate-700 hover:text-slate-950 transition-colors">
+                          <input
+                            type="checkbox"
+                            checked={showRoads}
+                            onChange={(e) => setShowRoads(e.target.checked)}
+                            className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5"
+                          />
+                          Road Networks
+                        </label>
+
+                        <label className="flex items-center gap-2 cursor-pointer select-none font-medium text-slate-700 hover:text-slate-950 transition-colors">
+                          <input
+                            type="checkbox"
+                            checked={showLandmarks}
+                            onChange={(e) => setShowLandmarks(e.target.checked)}
+                            className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5"
+                          />
+                          Major Landmarks
+                        </label>
                       </div>
                     </div>
-                  );
-                })}
+                  )}
+                </div>
+              </div>
+
+              {/* Map Range Info Overlay with rotation instruction */}
+              <div className="absolute top-[120px] sm:top-20 left-6 z-10 flex flex-col gap-1.5 pointer-events-none select-none">
+                <div className="bg-slate-800/85 text-white font-mono text-[9px] px-2.5 py-1.5 rounded-xl shadow-md backdrop-blur-sm">
+                  Range: {MAP_LAT_MIN.toFixed(4)} N - {MAP_LAT_MAX.toFixed(4)} N
+                </div>
+                <div className="bg-slate-800/85 text-white font-mono text-[9px] px-2.5 py-1.5 rounded-xl shadow-md backdrop-blur-sm flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+                  <span>Shift + Drag to Rotate</span>
+                </div>
               </div>
 
               {/* Map HUD Overlay Banner top-right */}
@@ -950,16 +1768,16 @@ export default function App() {
                   
                   <div className="mt-2.5 space-y-2">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-[11px] font-medium text-slate-700 flex items-center gap-1"> Water safety</span>
-                      <span className="text-[11px] font-bold text-red-600">98%</span>
+                      <span className="text-[11px] font-medium text-slate-700 flex items-center gap-1 flex-1 truncate">Water safety</span>
+                      <span className="text-[11px] font-bold text-red-600 shrink-0 ml-1">98%</span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-[11px] font-medium text-slate-700 flex items-center gap-1"> Street safety</span>
-                      <span className="text-[11px] font-bold text-amber-600">72%</span>
+                      <span className="text-[11px] font-medium text-slate-700 flex items-center gap-1 flex-1 truncate">Street safety</span>
+                      <span className="text-[11px] font-bold text-amber-600 shrink-0 ml-1">72%</span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-[11px] font-medium text-slate-700 flex items-center gap-1"> Environment</span>
-                      <span className="text-[11px] font-bold text-green-600">14%</span>
+                      <span className="text-[11px] font-medium text-slate-700 flex items-center gap-1 flex-1 truncate">Environment</span>
+                      <span className="text-[11px] font-bold text-green-600 shrink-0 ml-1">14%</span>
                     </div>
                   </div>
                 </div>
@@ -967,24 +1785,182 @@ export default function App() {
                 <button
                   id="btn-report-modal"
                   onClick={() => setIsReportOpen(true)}
-                  className="bg-indigo-600 text-white px-6 py-4 rounded-2xl shadow-xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition active:scale-95 text-xs text-center border-b-2 border-indigo-800"
+                  className="bg-indigo-600 text-white px-6 py-4 rounded-2xl shadow-xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition active:scale-95 text-xs text-center border-b-2 border-indigo-800 cursor-pointer"
                 >
                   <Plus className="w-5 h-5 text-white" />
                   REPORT NEW ISSUE
                 </button>
               </div>
 
-              {/* Map instructions overlay HUD bottom-left */}
-              <div className="absolute bottom-6 left-6 flex gap-4 bg-white/90 backdrop-blur px-4 py-2 rounded-full shadow-lg border border-slate-200/50 text-xs text-slate-650">
-                <div className="flex items-center gap-2 text-[10px] font-bold">
-                  <div className="w-2 h-2 rounded-full bg-red-500" /> Critical
+              {/* FLOATING ZOOM & ROTATION CONTROLS WITH COMPASS: bottom-right */}
+              <div id="map-zoom-controls" className="absolute bottom-6 right-6 z-20 flex flex-col gap-2.5 pointer-events-auto select-none">
+                {/* Visual Compass dial that updates with rotation state */}
+                <div 
+                  id="map-compass-widget"
+                  className="w-10 h-10 bg-white/95 backdrop-blur hover:bg-slate-50 text-slate-750 border border-slate-200/80 rounded-full shadow-lg flex items-center justify-center transition active:scale-95 cursor-pointer relative group"
+                  onClick={() => {
+                    setRotation(0);
+                    triggerToast("Orientation aligned to North", "info");
+                  }}
+                  title="Reset to North"
+                >
+                  {/* Rotating Dial */}
+                  <div 
+                    className="absolute inset-1 rounded-full border border-slate-100 flex items-center justify-center transition-transform"
+                    style={{ transform: `rotate(${-rotation}deg)` }}
+                  >
+                    <span className="absolute top-0 text-[8px] font-black text-red-500 tracking-tighter">N</span>
+                    <span className="absolute bottom-0 text-[7px] font-black text-slate-400 tracking-tighter">S</span>
+                    <span className="absolute left-0.5 text-[7px] font-black text-slate-400 tracking-tighter">W</span>
+                    <span className="absolute right-0.5 text-[7px] font-black text-slate-400 tracking-tighter">E</span>
+                    
+                    {/* Visual Compass Needle */}
+                    <div className="w-1 h-5 rounded-full bg-gradient-to-b from-red-500 to-slate-300 absolute" style={{ transform: 'translateY(-1px)' }} />
+                    <div className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 z-10" />
+                  </div>
+                  
+                  {/* Dynamic Heading Tooltip */}
+                  <div className="absolute right-12 top-1/2 -translate-y-1/2 bg-slate-900/95 backdrop-blur text-white text-[9px] font-bold px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap shadow-xl border border-slate-800">
+                    Heading: {Math.round(rotation)}° {getHeadingDirection(rotation)}
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] font-bold">
-                  <div className="w-2 h-2 rounded-full bg-amber-500" /> In Review
+
+                <div className="flex flex-col bg-white/95 backdrop-blur rounded-xl border border-slate-200/80 shadow-lg divide-y divide-slate-100 overflow-hidden">
+                  <button
+                    onClick={handleZoomIn}
+                    className="w-9 h-9 hover:bg-slate-50 text-slate-750 hover:text-indigo-600 flex items-center justify-center transition active:scale-90 cursor-pointer"
+                    title="Zoom In"
+                  >
+                    <ZoomIn className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={handleZoomOut}
+                    className="w-9 h-9 hover:bg-slate-50 text-slate-750 hover:text-indigo-600 flex items-center justify-center transition active:scale-90 cursor-pointer"
+                    title="Zoom Out"
+                  >
+                    <ZoomOut className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={handleZoomReset}
+                    className="w-9 h-9 hover:bg-slate-50 text-slate-750 hover:text-indigo-600 flex items-center justify-center transition active:scale-90 cursor-pointer"
+                    title="Reset View"
+                  >
+                    <Compass className="w-4 h-4" />
+                  </button>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] font-bold">
-                  <div className="w-2 h-2 rounded-full bg-green-500" /> Resolved
+              </div>
+
+              {/* DETAILED, EXPANDABLE LEGEND Overlay bottom-left */}
+              <div id="map-expandable-legend" className="absolute bottom-6 left-6 z-20 flex flex-col gap-2 max-w-xs sm:max-w-sm pointer-events-auto">
+                {/* Dynamic Map Scale Bar */}
+                <div className="bg-slate-900/90 text-white font-mono text-[9px] px-2.5 py-1.5 rounded-xl shadow-md backdrop-blur-sm flex items-center gap-2 self-start pointer-events-none select-none border border-slate-800">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-bold text-slate-400 tracking-wider">SCALE</span>
+                    <div className="flex items-center gap-2">
+                      <div className="h-1 bg-white border-x border-white" style={{ width: `${Math.min(80, Math.max(15, 30 * zoomScale))}px` }} />
+                      <span className="text-white font-black font-mono">
+                        {zoomScale >= 1.8 ? "250 m" : zoomScale >= 1.2 ? "500 m" : zoomScale >= 0.8 ? "1 km" : "2 km"}
+                      </span>
+                    </div>
+                  </div>
                 </div>
+
+                {isLegendExpanded ? (
+                  <div className="bg-white/95 backdrop-blur rounded-2xl shadow-xl border border-slate-200/85 p-4 w-72 max-h-[300px] overflow-hidden flex flex-col">
+                    <div className="flex justify-between items-center mb-3 pb-1.5 border-b border-slate-100 shrink-0">
+                      <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                        <Layers className="w-3.5 h-3.5 text-indigo-600" />
+                        Map Legend
+                      </h4>
+                      <button
+                        onClick={() => setIsLegendExpanded(false)}
+                        className="text-slate-400 hover:text-slate-600 cursor-pointer focus:outline-none p-0.5"
+                      >
+                        <ChevronDown className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-4 overflow-y-auto pr-1 flex-1">
+                      {/* Severity Legend */}
+                      <div>
+                        <h5 className="text-[9px] font-bold text-slate-450 uppercase tracking-widest mb-1.5 font-mono">Issue Severities</h5>
+                        <div className="grid grid-cols-3 gap-1.5">
+                          <div className="flex items-center gap-1 bg-red-50 border border-red-100 px-1.5 py-1 rounded-lg">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shrink-0" />
+                            <span className="text-[9px] font-bold text-red-700 truncate">Critical</span>
+                          </div>
+                          <div className="flex items-center gap-1 bg-orange-50 border border-orange-100 px-1.5 py-1 rounded-lg">
+                            <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
+                            <span className="text-[9px] font-bold text-orange-700 truncate">High</span>
+                          </div>
+                          <div className="flex items-center gap-1 bg-amber-50 border border-amber-100 px-1.5 py-1 rounded-lg">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                            <span className="text-[9px] font-bold text-amber-700 truncate">Med/Low</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Categories Legend */}
+                      <div>
+                        <h5 className="text-[9px] font-bold text-slate-450 uppercase tracking-widest mb-1.5 font-mono">Categories</h5>
+                        <div className="grid grid-cols-2 gap-1.5">
+                          <div className="flex items-center gap-1.5 text-[10px] text-slate-700 font-medium">
+                            <div className="w-4 h-4 rounded bg-slate-100 border border-slate-200/60 flex items-center justify-center text-slate-600 shrink-0">
+                              <AlertTriangle className="w-2.5 h-2.5" />
+                            </div>
+                            <span className="truncate">Roads/Sidewalks</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-[10px] text-slate-700 font-medium">
+                            <div className="w-4 h-4 rounded bg-slate-100 border border-slate-200/60 flex items-center justify-center text-slate-600 shrink-0">
+                              <Droplet className="w-2.5 h-2.5" />
+                            </div>
+                            <span className="truncate">Water/Sanitation</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-[10px] text-slate-700 font-medium">
+                            <div className="w-4 h-4 rounded bg-slate-100 border border-slate-200/60 flex items-center justify-center text-slate-600 shrink-0">
+                              <Lightbulb className="w-2.5 h-2.5" />
+                            </div>
+                            <span className="truncate">Power/Light</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-[10px] text-slate-700 font-medium">
+                            <div className="w-4 h-4 rounded bg-slate-100 border border-slate-200/60 flex items-center justify-center text-slate-600 shrink-0">
+                              <Trash className="w-2.5 h-2.5" />
+                            </div>
+                            <span className="truncate">Waste/Env</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Resolution Statuses Legend */}
+                      <div>
+                        <h5 className="text-[9px] font-bold text-slate-450 uppercase tracking-widest mb-1.5 font-mono">Resolution Statuses</h5>
+                        <div className="grid grid-cols-3 gap-1">
+                          <div className="flex items-center justify-center gap-1 bg-slate-50 border border-slate-200/60 px-1 py-1 rounded-lg">
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-500 shrink-0" />
+                            <span className="text-[8px] font-extrabold text-slate-600 uppercase tracking-tighter">Reported</span>
+                          </div>
+                          <div className="flex items-center justify-center gap-1 bg-sky-50 border border-sky-150 px-1 py-1 rounded-lg">
+                            <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" />
+                            <span className="text-[8px] font-extrabold text-sky-700 uppercase tracking-tighter">Verified</span>
+                          </div>
+                          <div className="flex items-center justify-center gap-1 bg-emerald-50 border border-emerald-150 px-1 py-1 rounded-lg">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                            <span className="text-[8px] font-extrabold text-emerald-700 uppercase tracking-tighter">Resolved</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setIsLegendExpanded(true)}
+                    className="flex items-center gap-2 bg-white/95 backdrop-blur px-4 py-2.5 rounded-2xl shadow-lg border border-slate-250 hover:bg-slate-50 transition font-bold text-xs text-slate-700 cursor-pointer"
+                  >
+                    <Layers className="w-4 h-4 text-indigo-600" />
+                    <span>Show Legend</span>
+                    <ChevronUp className="w-4 h-4 text-slate-400 ml-1" />
+                  </button>
+                )}
               </div>
             </section>
           </>
@@ -1035,7 +2011,15 @@ export default function App() {
             <div className="mt-6 p-4 bg-slate-50 rounded-2xl border border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
               <div className="border-r border-slate-200 pr-4 text-left">
                 <p className="font-bold text-slate-400 uppercase text-[10px]">Highest density pocket</p>
-                <p className="text-sm font-bold text-slate-800 mt-1">Intersection of Brook Lane & Elm Drive</p>
+                <p className="text-sm font-bold text-slate-800 mt-1">
+                  {selectedCityId === "bengaluru" ? "100 Feet Road, Indiranagar Area" :
+                   selectedCityId === "mumbai" ? "Colaba Causeway Crossing" :
+                   selectedCityId === "delhi" ? "Connaught Place Outer Circle" :
+                   selectedCityId === "chennai" ? "Usman Road Footpath" :
+                   selectedCityId === "hyderabad" ? "Laad Bazar Promenade" :
+                   selectedCityId === "kolkata" ? "College Street Crossing" :
+                   "Central Junction Zone"}
+                </p>
                 <p className="text-slate-400 mt-0.5">Target repair priority: Water Leakage networks</p>
               </div>
               <div className="border-r border-slate-200 px-4 text-left">
@@ -1047,7 +2031,13 @@ export default function App() {
                 <p className="font-bold text-slate-400 uppercase text-[10px]">AI Strategic Alert</p>
                 <div className="bg-amber-100 text-amber-800 p-2 rounded-lg font-bold mt-1 text-[11px] flex gap-1.5">
                   <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600" />
-                  Road issues clustering near Outer North loop curve!
+                  {selectedCityId === "bengaluru" ? "Pavement issues clustering near MG Road Junction curve!" :
+                   selectedCityId === "mumbai" ? "Waterlogging issues clustering near Marine Drive Promenade curve!" :
+                   selectedCityId === "delhi" ? "Overhead cable slacking near Connaught Place Outer Circle!" :
+                   selectedCityId === "chennai" ? "Sewer overflow issues clustering near Beach Loop Road!" :
+                   selectedCityId === "hyderabad" ? "Streetlight grid blackouts near HITEC City Corridor!" :
+                   selectedCityId === "kolkata" ? "Bitumen cracking near College Street tram tracks!" :
+                   "Pavement issues clustering near central corridor!"}
                 </div>
               </div>
             </div>
@@ -1190,7 +2180,7 @@ export default function App() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
                 <p className="text-[10px] font-bold text-slate-400 uppercase">Total Town Hall Budget</p>
-                <p className="text-xl font-black text-slate-800 mt-1">$450,000</p>
+                <p className="text-xl font-black text-slate-800 mt-1">{activeCity.budget}</p>
                 <div className="w-full bg-slate-200 h-1.5 rounded-full mt-2">
                   <div className="bg-indigo-600 h-full w-[45%] rounded-full" />
                 </div>
@@ -1223,8 +2213,8 @@ export default function App() {
               <div className="divide-y divide-slate-100 text-xs">
                 <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                   <div>
-                    <p className="font-bold text-slate-800">Swift Asphalt Repair & Co.</p>
-                    <p className="text-slate-400 text-[11px]">Primary responder: Roads, Potholes, Sidewalk concrete cracking</p>
+                    <p className="font-bold text-slate-800">{activeCity.agencies.roads.name}</p>
+                    <p className="text-slate-400 text-[11px]">{activeCity.agencies.roads.desc}</p>
                   </div>
                   <div>
                     <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 font-bold rounded-lg text-[10px] uppercase">
@@ -1235,8 +2225,8 @@ export default function App() {
 
                 <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                   <div>
-                    <p className="font-bold text-slate-800">HydroShield Utility Engineering</p>
-                    <p className="text-slate-400 text-[11px]">Primary responder: Water main breaks, sewer overflow, stormwater drainage</p>
+                    <p className="font-bold text-slate-800">{activeCity.agencies.water.name}</p>
+                    <p className="text-slate-400 text-[11px]">{activeCity.agencies.water.desc}</p>
                   </div>
                   <div>
                     <span className="px-2.5 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg text-[10px] uppercase">
@@ -1247,8 +2237,8 @@ export default function App() {
 
                 <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                   <div>
-                    <p className="font-bold text-slate-800">LumeGrid Power Contractors</p>
-                    <p className="text-slate-400 text-[11px]">Primary responder: Damaged street lights, transformer noise, public power boxes</p>
+                    <p className="font-bold text-slate-800">{activeCity.agencies.power.name}</p>
+                    <p className="text-slate-400 text-[11px]">{activeCity.agencies.power.desc}</p>
                   </div>
                   <div>
                     <span className="px-2.5 py-1 bg-green-50 text-green-700 font-bold rounded-lg text-[10px] uppercase">
@@ -1706,6 +2696,146 @@ export default function App() {
               </div>
 
             </form>
+
+          </div>
+        </div>
+      )}
+
+      {/* Dynamic Login & Switch Citizen Identity Modal */}
+      {isLoginModalOpen && (
+        <div 
+          id="login-modal-overlay"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-fade-in"
+        >
+          <div 
+            id="login-modal-box"
+            className="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl border border-slate-100 flex flex-col max-h-[85vh] overflow-hidden"
+          >
+            {/* Header */}
+            <div className="flex justify-between items-start mb-5">
+              <div>
+                <span className="text-[10px] font-bold text-indigo-650 uppercase tracking-widest block mb-1 font-mono">Civic Access Point</span>
+                <h2 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+                  <ShieldCheck className="w-6 h-6 text-indigo-600 shrink-0" />
+                  Sign In / Switch Profile
+                </h2>
+                <p className="text-slate-500 text-xs mt-1">
+                  Authenticate as an existing verified neighborhood guard, or register a new handle.
+                </p>
+              </div>
+              <button 
+                id="btn-close-login"
+                onClick={() => setIsLoginModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Content scroller */}
+            <div className="flex-1 overflow-y-auto space-y-6 pr-1">
+              
+              {/* Profile directory card sector */}
+              <div>
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 font-mono">
+                  Select Existing Active Citizen
+                </h3>
+                {availableCitizens.length === 0 ? (
+                  <p className="text-xs text-slate-400 italic">No registered citizens. Be the first!</p>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {availableCitizens.map((cit) => (
+                      <button
+                        key={cit.username}
+                        onClick={() => handleSwitchLogin(cit.username)}
+                        className={`flex items-center gap-3 p-3 rounded-2xl border text-left transition duration-150 group cursor-pointer ${
+                          profile?.username === cit.username 
+                            ? "bg-indigo-50/70 border-indigo-200 ring-2 ring-indigo-600/10" 
+                            : "bg-slate-50 hover:bg-slate-100/75 border-slate-200/60"
+                        }`}
+                      >
+                        <div className="w-10 h-10 rounded-full bg-white border border-slate-200 shadow-sm shrink-0 overflow-hidden flex items-center justify-center">
+                          <img 
+                            src={`https://api.dicebear.com/7.x/bottts/svg?seed=${cit.username}`}
+                            alt={cit.username}
+                            className="w-8 h-8"
+                          />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className={`text-sm font-bold truncate ${profile?.username === cit.username ? "text-indigo-900" : "text-slate-800"}`}>
+                            {cit.username}
+                          </p>
+                          <div className="flex items-center gap-2 mt-0.5 text-[10px] text-slate-400 font-bold uppercase tracking-tight">
+                            <span>Level {cit.level}</span>
+                            <span>•</span>
+                            <span className="text-indigo-600 font-extrabold">{cit.points} pts</span>
+                          </div>
+                        </div>
+                        <div className="w-5 h-5 rounded-full border border-slate-200 bg-white items-center justify-center flex shrink-0 group-hover:border-indigo-300">
+                          {profile?.username === cit.username ? (
+                            <div className="w-2.5 h-2.5 rounded-full bg-indigo-600" />
+                          ) : (
+                            <div className="w-1.5 h-1.5 rounded-full bg-transparent group-hover:bg-slate-300 transition" />
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Create new Profile form sector */}
+              <div className="border-t border-slate-100 pt-5">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 font-mono">
+                  Register New Civic Identity
+                </h3>
+                <p className="text-slate-500 text-[11px] mb-3">
+                  This creates a brand-new profile, initialized with 0 influence points.
+                </p>
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSwitchLogin(loginInputUsername);
+                  }}
+                  className="flex gap-2"
+                >
+                  <div className="relative flex-1 min-w-0">
+                    <input 
+                      type="text"
+                      placeholder="e.g. UrbanSpire99"
+                      value={loginInputUsername}
+                      onChange={(e) => {
+                        const sanitized = e.target.value.replace(/[^a-zA-Z0-9_-]/g, "");
+                        setLoginInputUsername(sanitized);
+                      }}
+                      maxLength={18}
+                      className="w-full h-10 px-3 py-2 text-sm bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-650 transition placeholder-slate-400"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="h-10 px-4 text-xs font-extrabold text-white bg-indigo-600 hover:bg-indigo-700 active:scale-95 transition rounded-xl flex items-center justify-center cursor-pointer shrink-0"
+                  >
+                    Register Handle
+                  </button>
+                </form>
+                {authError && (
+                  <p className="text-rose-600 text-xs mt-2 font-semibold">⚠️ {authError}</p>
+                )}
+              </div>
+
+            </div>
+
+            {/* Footer */}
+            <div className="pt-4 border-t border-slate-100 flex justify-between items-center text-[10px] text-slate-400">
+              <span className="font-mono">SmartCity Node auth://v1</span>
+              <button 
+                onClick={() => setIsLoginModalOpen(false)}
+                className="px-4 py-2 hover:bg-slate-50 hover:text-slate-600 font-bold rounded-xl transition cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
 
           </div>
         </div>
